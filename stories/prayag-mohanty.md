@@ -1,0 +1,3 @@
+Meet Prayag: known for his sharp wit, strong smashes, and comic timing that keeps the whole court alive. A reliable doubles specialist, he's the big brother of the team, always making practice more fun with his jokes and easy vibe. And in true Prayag fashion, he comes when he wants and leaves when he wants, always on his own schedule.
+
+*From Know Your Team, Inter IIT Sports Meet 2025 (IIT Madras).*

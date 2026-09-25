@@ -9,7 +9,7 @@
     String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
   const slug = (s) => String(s).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
   const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
-  const short = (y) => "'" + String(y).slice(2);
+  const short = (y) => (y ? "'" + String(y).slice(2) : "?");
 
   const AVATAR_COLORS = ["#d7263d", "#1f4fd6", "#13214d", "#b8860b", "#8a1c2c", "#2f6fe0"];
   const colorFor = (id) => {
@@ -22,16 +22,28 @@
   const players = [];
   const byId = new Map();
   const years = Object.keys(DATA.batches || {}).map(Number).sort((a, b) => b - a);
-  for (const year of years) {
-    for (const raw of DATA.batches[year] || []) {
-      if (!raw || !raw.name) continue;
-      let id = raw.id || slug(raw.name);
-      if (byId.has(id)) id = `${id}-${year}`;
-      const p = { ...raw, id, year, roles: raw.roles || [], achievements: raw.achievements || [] };
-      players.push(p);
-      byId.set(id, p);
-    }
-  }
+  const addPlayer = (raw, year) => {
+    if (!raw || !raw.name) return;
+    let id = raw.id || slug(raw.name);
+    if (byId.has(id)) id = `${id}-${year}`;
+    const nicknames = raw.nicknames || (raw.nickname ? [raw.nickname] : []);
+    const p = { ...raw, id, year, nicknames, roles: raw.roles || [], interIIT: raw.interIIT || [] };
+    players.push(p);
+    byId.set(id, p);
+  };
+  for (const year of years) (DATA.batches[year] || []).forEach((raw) => addPlayer(raw, year));
+  (DATA.yearUnknown || []).forEach((raw) => addPlayer(raw, null));
+  const batchKeys = [...years, ...((DATA.yearUnknown || []).length ? [null] : [])];
+
+  const meets = [...(DATA.interIITMeets || [])].sort((a, b) => b.year - a.year);
+  const meetFor = (year) => meets.find((m) => m.year === year) || { year };
+  const PLACE = { 1: "Winner", 2: "Runner-up", 3: "Third", award: "Award" };
+  // Every result, with the player resolved where the name matches someone on the tree.
+  const results = (DATA.events || []).flatMap((ev) =>
+    (ev.results || []).map((r) => ({ ...r, event: ev.name, year: ev.year, player: byId.get(r.who) || null }))
+  );
+  const resultsOf = (id) => results.filter((r) => r.player && r.player.id === id);
+  const placeLabel = (r) => r.label || PLACE[r.place] || String(r.place || "");
   const menteesOf = (id) => players.filter((p) => p.mentor === id);
 
   // ---------- Avatars ----------
@@ -54,38 +66,43 @@
   document.getElementById("stats").innerHTML = [
     `<span><b>${players.length}</b> players</span>`,
     `<span><b>${years.length}</b> batches</span>`,
+    `<span><b>${players.filter((p) => p.interIIT.length).length}</b> Inter IIT players</span>`,
     years.length ? `<span>since <b>${years[years.length - 1]}</b></span>` : "",
   ].join("");
 
   // ---------- Tree ----------
   const tree = document.getElementById("tree");
   let query = "";
+  let squad = "all"; // "all", "interiit" or a meet year
   let firstRender = true;
 
   function renderTree() {
     const q = query.trim().toLowerCase();
-    const match = (p) => !q || [p.name, p.nickname, p.program, p.hostel, p.year, ...p.roles].join(" ").toLowerCase().includes(q);
+    const inSquad = (p) =>
+      squad === "all" || (squad === "interiit" ? p.interIIT.length > 0 : p.interIIT.some((t) => String(t.year) === squad));
+    const match = (p) =>
+      inSquad(p) && (!q || [p.name, ...p.nicknames, p.program, p.hostel, p.year, ...p.roles].join(" ").toLowerCase().includes(q));
 
     let html = `<svg class="tree-svg" aria-hidden="true"></svg>`;
     let shown = 0;
     let i = 0;
-    for (const year of years) {
+    for (const year of batchKeys) {
       const visible = players.filter((p) => p.year === year && match(p));
       if (!visible.length) continue;
       shown += visible.length;
       html += `
-        <section class="batch ${i++ % 2 ? "blue" : "red"}" data-year="${year}" aria-label="Joined ${year}">
-          <div class="batch-badge" title="Joined ${year}">${short(year)}</div>
+        <section class="batch ${i++ % 2 ? "blue" : "red"}" aria-label="${year ? "Joined IIT Bombay in " + year : "Joining year not known"}">
+          <div class="batch-badge" title="${year ? "Joined IIT Bombay in " + year : "Joining year not known yet"}">${year ? short(year) : "?"}</div>
           <div class="leaves">
             ${visible
               .map(
-                (p) => `<button class="leaf" type="button" data-id="${p.id}">${avatar(p)}<span class="name">${esc(p.name)}${p.nickname ? `<span class="nick">${esc(p.nickname)}</span>` : ""}</span></button>`
+                (p) => `<button class="leaf${p.interIIT.length ? " iit" : ""}" type="button" data-id="${p.id}">${avatar(p)}<span class="name">${esc(p.name)}${p.nicknames.length ? `<span class="nick">${esc(p.nicknames.join(" · "))}</span>` : ""}</span></button>`
               )
               .join("")}
           </div>
         </section>`;
     }
-    if (!shown) html += `<p class="no-results">Nobody matches “${esc(query)}”.</p>`;
+    if (!shown) html += `<p class="no-results">Nobody matches that.</p>`;
     tree.innerHTML = html;
     tree.classList.toggle("grow", firstRender && !reduceMotion);
     drawTree(firstRender && !reduceMotion);
@@ -222,7 +239,7 @@
     const at = len * (1 - t);
     const p = trunkPath.getPointAtLength(at);
     const q = trunkPath.getPointAtLength(Math.max(0, at - 2));
-    const angle = (Math.atan2(p.y - q.y, p.x - q.x) * 180) / Math.PI - 90;
+    const angle = (Math.atan2(p.y - q.y, p.x - q.x) * 180) / Math.PI + 90;
     shuttle.setAttribute("transform", `translate(${p.x},${p.y}) rotate(${angle.toFixed(1)})`);
   }
   let ticking = false;
@@ -259,6 +276,22 @@
   }).observe(tree);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 
+  const chips = document.getElementById("chips");
+  chips.innerHTML = [
+    ["all", "Everyone"],
+    ["interiit", "Inter IIT players"],
+    ...(meets.length > 1 ? meets.map((m) => [String(m.year), `Inter IIT ${m.year}`]) : []),
+  ]
+    .map(([v, label]) => `<button class="chip" type="button" data-squad="${v}" aria-pressed="${v === squad}">${esc(label)}</button>`)
+    .join("");
+  chips.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-squad]");
+    if (!btn) return;
+    squad = btn.dataset.squad;
+    chips.querySelectorAll("[data-squad]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+    renderTree();
+  });
+
   document.getElementById("search").addEventListener("input", (e) => {
     query = e.target.value;
     renderTree();
@@ -289,55 +322,102 @@
   const drawer = document.getElementById("drawer");
   const scrim = document.getElementById("scrim");
   let lastFocus = null;
+  let openId = null;
 
   const personChips = (list) =>
-    `<div class="people">${list.map((p) => `<button type="button" data-open="${p.id}">${esc(p.name)} · ${short(p.year)}</button>`).join("")}</div>`;
+    `<div class="people">${list.map((p) => `<button type="button" data-open="${p.id}">${esc(p.name)}${p.year ? " · " + short(p.year) : ""}</button>`).join("")}</div>`;
+
+  const medal = (place) => `<span class="medal m${esc(place)}" aria-hidden="true"></span>`;
+
+  // Tiny markdown: paragraphs, **bold**, *italic*.
+  const md = (text) =>
+    text
+      .trim()
+      .split(/\n\s*\n/)
+      .map((para) => `<p>${esc(para).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>").replace(/\n/g, "<br>")}</p>`)
+      .join("");
+
+  const gh = DATA.github || {};
+  const storyLink = (id, exists) =>
+    gh.repo
+      ? exists
+        ? `https://github.com/${gh.repo}/edit/${gh.branch || "main"}/stories/${id}.md`
+        : `https://github.com/${gh.repo}/new/${gh.branch || "main"}/stories?filename=${id}.md`
+      : "";
+
+  async function loadStory(p) {
+    const box = drawer.querySelector(".story");
+    let text = null;
+    try {
+      const res = await fetch(`stories/${p.id}.md`, { cache: "no-cache" });
+      if (res.ok) text = await res.text();
+    } catch (_) {}
+    if (openId !== p.id) return; // another card was opened meanwhile
+    const link = storyLink(p.id, !!text);
+    box.innerHTML = text
+      ? `${md(text)}${link ? `<a class="story-edit" href="${link}" target="_blank" rel="noopener">Edit story</a>` : ""}`
+      : `<p class="hint">Nobody has written ${esc(p.name.split(" ")[0])}'s story yet.</p>${link ? `<a class="story-write" href="${link}" target="_blank" rel="noopener">Write their story</a>` : ""}`;
+  }
 
   function openPlayer(id) {
     const p = byId.get(id);
     if (!p) return;
     if (drawer.hidden) lastFocus = document.activeElement;
+    openId = id;
     const mentor = p.mentor && byId.get(p.mentor);
     const mentees = menteesOf(p.id);
     const batchmates = players.filter((o) => o.year === p.year && o.id !== p.id);
+    const wins = resultsOf(p.id).sort((a, b) => (b.year || 0) - (a.year || 0));
 
     drawer.innerHTML = `
       <button class="close" type="button" data-close>Close</button>
       ${avatar(p, true)}
       <h3 id="drawer-title">${esc(p.name)}</h3>
-      ${p.nickname ? `<p class="nick">“${esc(p.nickname)}”</p>` : ""}
-      ${p.note ? `<p class="note">${esc(p.note)}</p>` : ""}
+      ${p.nicknames.length ? `<p class="nick">aka ${p.nicknames.map((n) => `“${esc(n)}”`).join(", ")}</p>` : ""}
       <dl>
-        <dt>Joined</dt><dd>${p.year}</dd>
-        ${p.squad ? `<dt>Squad</dt><dd>${esc(p.squad)}</dd>` : ""}
+        <dt>Joined IITB</dt><dd>${p.year || "Not known yet"}</dd>
         ${p.program ? `<dt>Program</dt><dd>${esc(p.program)}</dd>` : ""}
         ${p.hostel ? `<dt>Hostel</dt><dd>${esc(p.hostel)}</dd>` : ""}
         ${p.roles.length ? `<dt>Roles</dt><dd>${p.roles.map(esc).join("<br>")}</dd>` : ""}
         ${p.instagram ? `<dt>Instagram</dt><dd><a href="https://www.instagram.com/${esc(p.instagram)}/" target="_blank" rel="noopener">@${esc(p.instagram)}</a></dd>` : ""}
       </dl>
       ${
-        p.achievements.length
-          ? `<h4>Achievements</h4><ul>${[...p.achievements]
-              .sort((a, b) => (b.year || 0) - (a.year || 0))
-              .map((a) => `<li>${a.year ? `<b>${esc(a.year)}</b> · ` : ""}${esc(a.title || a)}</li>`)
+        p.interIIT.length
+          ? `<h4>Inter IIT</h4><ul class="iit-list">${[...p.interIIT]
+              .sort((a, b) => b.year - a.year)
+              .map((t) => {
+                const m = meetFor(t.year);
+                return `<li><b>${esc(t.year)}</b>${m.host ? ` · ${esc(m.host)}` : ""}${t.position ? ` · ${esc(t.position)}` : ""}</li>`;
+              })
               .join("")}</ul>`
           : ""
       }
+      ${
+        wins.length
+          ? `<h4>Results</h4><ul class="wins">${wins
+              .map((r) => `<li>${medal(r.place)}<span><b>${esc(placeLabel(r))}</b>, ${esc(r.category)}<br><span class="ev">${esc(r.event)}${r.year ? " " + r.year : ""}</span></span></li>`)
+              .join("")}</ul>`
+          : ""
+      }
+      <h4>Story</h4>
+      <div class="story"><p class="hint">Loading…</p></div>
       ${mentor ? `<h4>Brought in by</h4>${personChips([mentor])}` : ""}
       ${mentees.length ? `<h4>Passed the racquet to</h4>${personChips(mentees)}` : ""}
-      ${batchmates.length ? `<h4>Batchmates</h4>${personChips(batchmates)}` : ""}
+      ${batchmates.length ? `<h4>${p.year ? "Batchmates" : "Also waiting for a year"}</h4>${personChips(batchmates)}` : ""}
     `;
     drawer.hidden = false;
     scrim.hidden = false;
     drawer.scrollTop = 0;
     drawer.querySelector("[data-close]").focus();
     try { history.replaceState(null, "", "#" + p.id); } catch (_) {}
+    loadStory(p);
   }
 
   function closeDrawer() {
     if (drawer.hidden) return;
     drawer.hidden = true;
     scrim.hidden = true;
+    openId = null;
     try { history.replaceState(null, "", location.pathname + location.search); } catch (_) {}
     lastFocus?.focus?.();
   }
@@ -349,29 +429,57 @@
   });
   scrim.addEventListener("click", closeDrawer);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+  // Any [data-open] button outside the drawer (trophies, Inter IIT) opens that card.
+  document.querySelector("main").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-open]");
+    if (btn && !drawer.contains(btn)) openPlayer(btn.dataset.open);
+  });
+
+  const who = (r) =>
+    r.player ? `<button class="who-link" type="button" data-open="${r.player.id}">${esc(r.player.name)}</button>` : `<span>${esc(r.who)}</span>`;
+
+  // ---------- Inter IIT ----------
+  function renderInterIIT() {
+    const el = document.getElementById("interiit");
+    if (!meets.length) {
+      el.innerHTML = `<div class="empty-state">Add each meet to <code>interIITMeets</code> and each player's <code>interIIT</code> in <code>data/team.js</code>.</div>`;
+      return;
+    }
+    el.innerHTML = meets
+      .map((m) => {
+        const squadList = players.filter((p) => p.interIIT.some((t) => t.year === m.year));
+        return `<article class="meet">
+          <header><span class="meet-year">${esc(m.year)}</span><span class="meet-host">${esc(m.host || "")}</span>${m.result ? `<span class="meet-result">${esc(m.result)}</span>` : ""}</header>
+          <div class="meet-squad">${squadList
+            .map((p) => {
+              const t = p.interIIT.find((x) => x.year === m.year);
+              return `<button type="button" class="squad-chip" data-open="${p.id}">${avatar(p)}<span>${esc(p.name)}${t.position ? `<small>${esc(t.position)}</small>` : ""}</span></button>`;
+            })
+            .join("")}</div>
+        </article>`;
+      })
+      .join("");
+  }
 
   // ---------- Trophy cabinet ----------
   function renderTrophies() {
-    const rows = [
-      ...(DATA.teamAchievements || []).map((a) => ({ year: a.year, title: a.title, who: null })),
-      ...players.flatMap((p) => p.achievements.map((a) => ({ year: a.year, title: a.title || a, who: p }))),
-    ].sort((a, b) => (b.year || 0) - (a.year || 0));
-
     const el = document.getElementById("trophies");
-    if (!rows.length) {
-      el.innerHTML = `<div class="empty-state">Nothing here yet. Team results go in <code>teamAchievements</code> and individual ones in each player's <code>achievements</code>, both in <code>data/team.js</code>.</div>`;
+    const events = [...(DATA.events || [])].sort((a, b) => (b.year || 0) - (a.year || 0));
+    if (!events.length) {
+      el.innerHTML = `<div class="empty-state">Nothing here yet. Add tournaments and results to <code>events</code> in <code>data/team.js</code>.</div>`;
       return;
     }
-    el.innerHTML = `<ul class="trophies">${rows
-      .map(
-        (r) => `<li><span class="y">${esc(r.year || "")}</span><span>${esc(r.title)}
-          <br><span class="who">${r.who ? `<button class="who-link" type="button" data-open="${r.who.id}">${esc(r.who.name)}</button>` : "Team"}</span></span></li>`
-      )
-      .join("")}</ul>`;
-    el.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-open]");
-      if (btn) openPlayer(btn.dataset.open);
-    });
+    el.innerHTML = `<div class="events">${events
+      .map((ev) => {
+        const rows = results.filter((r) => r.event === ev.name && r.year === ev.year);
+        return `<article class="event">
+          <h3>${esc(ev.name)}${ev.year ? ` <span>${ev.year}</span>` : ""}</h3>
+          <ul>${rows
+            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span><span class="nm">${who(r)}</span></li>`)
+            .join("")}</ul>
+        </article>`;
+      })
+      .join("")}</div>`;
   }
 
   // ---------- Extended family ----------
@@ -388,13 +496,13 @@
           <div><strong>${esc(f.name)}</strong>
             <div class="role">${esc([f.role, f.years].filter(Boolean).join(" · "))}</div>
             ${f.note ? `<p>${esc(f.note)}</p>` : ""}
-            ${f.instagram ? `<p><a href="https://www.instagram.com/${esc(f.instagram)}/" target="_blank" rel="noopener">@${esc(f.instagram)}</a></p>` : ""}
           </div></div>`
       )
       .join("")}</div>`;
   }
 
   renderTree();
+  renderInterIIT();
   renderTrophies();
   renderFamily();
 

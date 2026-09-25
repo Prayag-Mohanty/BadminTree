@@ -22,7 +22,9 @@
 <div class="controls">
   <div class="wrap">
     <input id="search" class="search" type="search" aria-label="Search players" placeholder="Search a name or year" autocomplete="off">
+    <div class="chips" id="chips" role="group" aria-label="Show"></div>
     <nav class="nav-links" aria-label="Sections">
+      <a href="#inter-iit">Inter IIT</a>
       <a href="#trophy-cabinet">Trophies</a>
       <a href="#extended-family">Family</a>
     </nav>
@@ -32,13 +34,19 @@
 <main class="wrap">
   <section class="section" aria-labelledby="tree-h">
     <h2 id="tree-h">The Tree</h2>
-    <p class="sub">Each knot on the trunk is the year a batch joined. Newest up top, roots at the bottom.</p>
+    <p class="sub">Each knot on the trunk is the year a batch joined IIT Bombay, newest at the top. A gold ring marks an Inter IIT player. Tap anyone to read their story.</p>
     <div class="tree" id="tree"></div>
+  </section>
+
+  <section class="section" id="inter-iit" aria-labelledby="iit-h">
+    <h2 id="iit-h">Inter IIT</h2>
+    <p class="sub">Who represented IIT Bombay at each Inter IIT Sports Meet.</p>
+    <div id="interiit"></div>
   </section>
 
   <section class="section" id="trophy-cabinet" aria-labelledby="trophy-h">
     <h2 id="trophy-h">Trophy Cabinet</h2>
-    <p class="sub">Team and individual results, newest first.</p>
+    <p class="sub">Institute tournaments and awards, newest first.</p>
     <div id="trophies"></div>
   </section>
 

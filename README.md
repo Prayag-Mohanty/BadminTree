@@ -6,41 +6,39 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 ## What's on the page
 
-- **The Tree**: a curving trunk with one knot per batch (the year they joined the team), newest at the top and roots at the bottom. It grows from the roots when the page loads, and a shuttlecock drops down the trunk as you scroll. Tap anyone to open their card.
-- **Search**: by name, nickname or year.
-- **Lineage**: set a player's `mentor` and hovering them lights up their senior and juniors. Their card shows "Brought in by" and "Passed the racquet to".
-- **Trophy cabinet**: team and individual results collected from the data, newest first.
+- **The Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top and roots at the bottom. It grows from the roots when the page loads, and a shuttlecock drops down the trunk as you scroll. A gold ring around a photo marks an Inter IIT player.
+- **Player cards**: tap anyone for their nicknames, Inter IIT years, tournament results and their story.
+- **Search and filter**: by name, nickname or year, or show only Inter IIT players.
+- **Inter IIT**: each Inter IIT Sports Meet with its host and the squad that played.
+- **Trophy cabinet**: institute tournaments and awards, grouped by event.
 - **Extended family**: people who weren't on the roster but were part of the story.
-- **Deep links**: `…/index.html#vidhi-kapuria` opens that player's card directly, handy for sharing in the group.
+- **Deep links**: `…/#vidhi-kapuria` opens that player's card directly.
 
 ## Editing the data
 
-Everything lives in [`data/team.js`](data/team.js). The field list is documented at the top of that file. A fully filled player looks like:
+Everything lives in [`data/team.js`](data/team.js); the field list is at the top of that file. A filled-in player looks like:
 
 ```js
 {
   name: "Prayag Mohanty",
-  nickname: "…",
-  squad: "Men's",
-  program: "B.Tech, …",
-  hostel: "H…",
+  nicknames: ["Sugardaddy"],
+  program: "…",
   roles: ["Captain 2026-27"],
-  achievements: [{ year: 2025, title: "Inter IIT: Men's team …" }],
-  mentor: "keshav-samdani",          // id = name in lowercase with dashes
-  instagram: "handle",
-  photo: "photos/prayag-mohanty.jpg", // drop the image into photos/
-  note: "One line a fresher should know about them.",
+  interIIT: [{ year: 2025, position: "Men's team, 4th" }],
+  mentor: "keshav-samdani",   // id = name in lowercase with dashes
 }
 ```
 
-A new batch is a new key under `batches`:
+- **New batch**: add a year under `batches`, e.g. `2027: [{ name: "New Fresher" }]`.
+- **Inter IIT**: add the meet to `interIITMeets` (`{ year, host, result }`) and `{ year, position }` to each player who played.
+- **Results**: add a tournament to `events`, with one line per result naming the player by id (or by plain name if they're not on the tree).
+- **Year unknown**: people in `yearUnknown` sit at the roots under a "?" until you move them into a batch.
 
-```js
-batches: {
-  2027: [{ name: "New Fresher" }],
-  …
-}
-```
+## Stories
+
+Each person's story is a text file: `stories/<id>.md` (e.g. `stories/vidhi-kapuria.md`). Blank lines start new paragraphs; `*italics*` and `**bold**` work.
+
+The easiest way: open someone's card on the live site and click **Write their story** (or **Edit story**). It opens that exact file in GitHub's editor; write it, click **Commit changes**, and it's live in about a minute.
 
 ### Editing straight on GitHub (no setup)
 

@@ -1,11 +1,14 @@
 :root {
   color-scheme: light;
-  --bg: #ffffff;
+  --bg: #e6ebf8;
+  --blob-red: rgba(215, 38, 61, 0.30);
+  --blob-blue: rgba(31, 79, 214, 0.34);
+  --tree-bg: #f8f9fc;
   --surface: #ffffff;
-  --surface-2: #f0f3fa;
+  --surface-2: #eef1f8;
   --ink: #101a3a;
-  --muted: #5a6385;
-  --line: #dde2ee;
+  --muted: #535d80;
+  --line: #d6dcea;
   --red: #d7263d;
   --blue: #1f4fd6;
   --navy: #13214d;
@@ -15,10 +18,70 @@
   --silver: #9aa3b5;
   --bronze: #c07a3c;
   --shadow: 0 12px 32px rgba(16, 26, 58, 0.14);
+  --glass: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42));
+  --glass-solid: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-edge: rgba(16, 26, 58, 0.08);
+  --glass-shadow: 0 8px 28px rgba(16, 26, 58, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   --f-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
   --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --bg: #0a1024;
+  --blob-red: rgba(255, 75, 95, 0.22);
+  --blob-blue: rgba(91, 134, 255, 0.28);
+  --tree-bg: #10172e;
+  --surface: #151e3c;
+  --surface-2: #1c2748;
+  --ink: #eef1fa;
+  --muted: #a1abcb;
+  --line: #2a365e;
+  --red: #ff4b5f;
+  --blue: #6a92ff;
+  --navy: #34478c;
+  --gold: #ffc53d;
+  --on-accent: #ffffff;
+  --court-line: #dfe6ff;
+  --silver: #b5bdd0;
+  --bronze: #d9914f;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --glass: linear-gradient(135deg, rgba(40, 54, 100, 0.62), rgba(20, 28, 58, 0.38));
+  --glass-solid: rgba(18, 26, 54, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-edge: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a1024;
+  --blob-red: rgba(255, 75, 95, 0.22);
+  --blob-blue: rgba(91, 134, 255, 0.28);
+  --tree-bg: #10172e;
+  --surface: #151e3c;
+  --surface-2: #1c2748;
+  --ink: #eef1fa;
+  --muted: #a1abcb;
+  --line: #2a365e;
+  --red: #ff4b5f;
+  --blue: #6a92ff;
+  --navy: #34478c;
+  --gold: #ffc53d;
+  --on-accent: #ffffff;
+  --court-line: #dfe6ff;
+  --silver: #b5bdd0;
+  --bronze: #d9914f;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --glass: linear-gradient(135deg, rgba(40, 54, 100, 0.62), rgba(20, 28, 58, 0.38));
+  --glass-solid: rgba(18, 26, 54, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-edge: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -28,6 +91,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--f-body);
+  position: relative;
   font-size: 15px;
   line-height: 1.5;
   overflow-x: hidden;
@@ -184,7 +248,7 @@ code {
   height: 76px;
   border-radius: 50%;
   color: var(--on-accent);
-  box-shadow: 0 0 0 6px var(--bg);
+  box-shadow: 0 0 0 6px var(--tree-bg);
   font-family: var(--f-display);
   font-weight: 800;
   font-size: 30px;
@@ -193,7 +257,7 @@ code {
 }
 .batch.red .batch-badge { background: var(--red); }
 .batch.blue .batch-badge { background: var(--blue); }
-.batch:hover .batch-badge { box-shadow: 0 0 0 6px var(--bg), 0 0 0 10px var(--gold); transform: rotate(-6deg); }
+.batch:hover .batch-badge { box-shadow: 0 0 0 6px var(--tree-bg), 0 0 0 10px var(--gold); transform: rotate(-6deg); }
 
 .leaves { grid-row: 1; display: flex; flex-wrap: wrap; gap: 10px; }
 .batch:nth-of-type(odd) .leaves { grid-column: 3; justify-content: flex-start; }
@@ -390,3 +454,68 @@ footer { padding-block: 40px; color: var(--muted); font-size: 13px; }
   .tree.grow .batch-badge, .tree.grow .leaf, .drawer { animation: none; stroke-dashoffset: 0; opacity: 1; }
   .leaf, .batch-badge { transition: none; }
 }
+
+/* ---------- Backdrop & glass ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(40vmax 40vmax at 8% 6%, var(--blob-blue), transparent 70%),
+    radial-gradient(34vmax 34vmax at 96% 30%, var(--blob-red), transparent 70%),
+    radial-gradient(38vmax 38vmax at 20% 96%, var(--blob-red), transparent 70%),
+    radial-gradient(40vmax 40vmax at 90% 100%, var(--blob-blue), transparent 70%);
+}
+
+/* The tree sits on its own calm off-white band. */
+.tree-band {
+  background: var(--tree-bg);
+  border-block: 1px solid var(--glass-edge);
+  margin-top: 28px;
+}
+.tree-band .section { padding-block: 36px 20px; }
+
+.controls,
+.search,
+.chip:not([aria-pressed="true"]),
+.theme-toggle,
+.leaf,
+.squad-chip,
+.meet,
+.event,
+.family-card,
+.empty-state,
+.drawer {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+.controls { border-width: 0 0 1px; border-bottom-color: var(--glass-edge); box-shadow: none; }
+.leaf { border-color: var(--glass-edge); }
+.leaf:hover { border-color: var(--gold); box-shadow: var(--shadow); }
+.leaf.lineage { box-shadow: 0 0 0 3px var(--gold); }
+.empty-state { border-style: solid; }
+.drawer { background: var(--glass-solid); border-width: 0 0 0 1px; box-shadow: var(--shadow); }
+.scrim { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.drawer .people button, .drawer .close { background: var(--glass); border: 1px solid var(--glass-border); }
+code { background: var(--glass); }
+
+.event .rnote, .meet .hint { color: var(--muted); font-weight: 400; }
+.meet .hint { margin: 0 0 8px; font-size: 14px; }
+
+.theme-toggle {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.hero-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.hero-top .eyebrow { margin: 0; }
+.search { flex-basis: 200px; }

@@ -11,7 +11,7 @@
   const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("");
   const short = (y) => (y ? "'" + String(y).slice(2) : "?");
 
-  const AVATAR_COLORS = ["#d7263d", "#1f4fd6", "#13214d", "#b8860b", "#8a1c2c", "#2f6fe0"];
+  const AVATAR_COLORS = ["#d7263d", "#1f4fd6", "#3b5199", "#b8860b", "#8a1c2c", "#2f6fe0"];
   const colorFor = (id) => {
     let h = 0;
     for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
@@ -450,6 +450,7 @@
         const squadList = players.filter((p) => p.interIIT.some((t) => t.year === m.year));
         return `<article class="meet">
           <header><span class="meet-year">${esc(m.year)}</span><span class="meet-host">${esc(m.host || "")}</span>${m.result ? `<span class="meet-result">${esc(m.result)}</span>` : ""}</header>
+          ${squadList.length ? "" : `<p class="hint">Squad not added yet. Add <code>{ year: ${esc(m.year)} }</code> to each player's <code>interIIT</code>.</p>`}
           <div class="meet-squad">${squadList
             .map((p) => {
               const t = p.interIIT.find((x) => x.year === m.year);
@@ -475,7 +476,7 @@
         return `<article class="event">
           <h3>${esc(ev.name)}${ev.year ? ` <span>${ev.year}</span>` : ""}</h3>
           <ul>${rows
-            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span><span class="nm">${who(r)}</span></li>`)
+            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span>${r.who || r.note ? `<span class="nm">${r.who ? who(r) : ""}${r.note ? `<span class="rnote">${r.who ? " · " : ""}${esc(r.note)}</span>` : ""}</span>` : ""}</li>`)
             .join("")}</ul>
         </article>`;
       })
@@ -500,6 +501,28 @@
       )
       .join("")}</div>`;
   }
+
+  // ---------- Light / dark toggle ----------
+  // Follows the device until someone picks; the choice is remembered on this browser.
+  const themeBtn = document.getElementById("theme-toggle");
+  const root = document.documentElement;
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : systemDark.matches);
+  const syncThemeBtn = () => {
+    themeBtn.textContent = isDark() ? "Light mode" : "Dark mode";
+  };
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark" || saved === "light") root.dataset.theme = saved;
+  } catch (_) {}
+  themeBtn.addEventListener("click", () => {
+    const next = isDark() ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("theme", next); } catch (_) {}
+    syncThemeBtn();
+  });
+  systemDark.addEventListener?.("change", syncThemeBtn);
+  syncThemeBtn();
 
   renderTree();
   renderInterIIT();

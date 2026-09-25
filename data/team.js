@@ -25,7 +25,8 @@
  * RESULTS go in `events`. Each result names the player by id (links to
  * their card) or by plain name (for people not on the tree).
  *   place: 1 = Winner, 2 = Runner-up, 3 = Third, "award" = special award.
- *   Add `label` to override the wording.
+ *   Add `label` to override the wording and `note` for a short remark.
+ *   Leave out `who` for team results.
  */
 window.TEAM_DATA = {
   club: "IIT Bombay Badminton",
@@ -87,9 +88,32 @@ window.TEAM_DATA = {
 
   interIITMeets: [
     { year: 2025, host: "IIT Madras", result: "" },
+    {
+      year: 2024,
+      host: "", // add the host
+      result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions.",
+    },
   ],
 
   events: [
+    {
+      name: "Inter IIT Sports Meet",
+      year: 2024,
+      results: [
+        { category: "Men's Team", place: 2, note: "Best finish in 12 years" },
+        { category: "Overall Sports Championship", place: 1, who: "IIT Bombay" },
+      ],
+    },
+    {
+      name: "Spardha, IIT BHU",
+      year: 2025,
+      results: [{ category: "Men's Team", place: 3 }],
+    },
+    {
+      name: "Udghosh, IIT Kanpur",
+      year: 2024,
+      results: [{ category: "Men's Team", place: 3 }],
+    },
     {
       name: "Institute Badminton Open",
       year: 2026,
@@ -125,5 +149,8 @@ window.TEAM_DATA = {
 
   // The extended family: coaches, managers, friends of the team.
   // { name: "…", role: "Coach", years: "2019-present", note: "…" }
-  family: [],
+  family: [
+    { name: "Shelendra Rasaniya", role: "Head coach · Men's coach" },
+    { name: "Namrata Ghole", role: "Women's coach" },
+  ],
 };

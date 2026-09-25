@@ -13,7 +13,10 @@
 <body>
 <!--BODY-->
 <header class="hero wrap">
-  <p class="eyebrow">IIT Bombay · Badminton</p>
+  <div class="hero-top">
+    <p class="eyebrow">IIT Bombay · Badminton</p>
+    <button class="theme-toggle" id="theme-toggle" type="button">Dark mode</button>
+  </div>
   <h1>The <span class="r">Team</span> <span class="b">Tree</span></h1>
   <p class="lede">Every player who has worn the jersey, batch by batch, from the roots up to this year's freshers. Tap a name to meet them.</p>
   <div class="stats" id="stats"></div>
@@ -31,13 +34,15 @@
   </div>
 </div>
 
-<main class="wrap">
-  <section class="section" aria-labelledby="tree-h">
+<div class="tree-band">
+  <section class="section wrap" aria-labelledby="tree-h">
     <h2 id="tree-h">The Tree</h2>
     <p class="sub">Each knot on the trunk is the year a batch joined IIT Bombay, newest at the top. A gold ring marks an Inter IIT player. Tap anyone to read their story.</p>
     <div class="tree" id="tree"></div>
   </section>
+</div>
 
+<main class="wrap">
   <section class="section" id="inter-iit" aria-labelledby="iit-h">
     <h2 id="iit-h">Inter IIT</h2>
     <p class="sub">Who represented IIT Bombay at each Inter IIT Sports Meet.</p>

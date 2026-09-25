@@ -6,8 +6,8 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 ## What's on the page
 
-- **The Tree**: a trunk with one ring per batch (the year they joined the team). Newest batch at the top, roots at the bottom. Tap anyone to open their card.
-- **Search & filters**: by name, nickname, year, or current squad vs. alumni.
+- **The Tree**: a curving trunk with one knot per batch (the year they joined the team), newest at the top and roots at the bottom. It grows from the roots when the page loads, and a shuttlecock drops down the trunk as you scroll. Tap anyone to open their card.
+- **Search**: by name, nickname or year.
 - **Lineage**: set a player's `mentor` and hovering them lights up their senior and juniors. Their card shows "Brought in by" and "Passed the racquet to".
 - **Trophy cabinet**: team and individual results collected from the data, newest first.
 - **Extended family**: people who weren't on the roster but were part of the story.
@@ -42,7 +42,23 @@ batches: {
 }
 ```
 
-**Alumni vs. current** is worked out automatically: a batch counts as alumni once `graduationYears` (default 4) academic years have passed since they joined. Set `status: "alumni"` or `status: "current"` on anyone who doesn't fit (dual degree, PG, left early).
+### Editing straight on GitHub (no setup)
+
+1. Open [`data/team.js`](data/team.js) on GitHub and click the pencil icon (**Edit this file**).
+2. Make the change, e.g. add `nickname: "Shini"` inside `{ name: "Aditya Shinigami" }`.
+3. Click **Commit changes**. With GitHub Pages switched on, the site updates in about a minute.
+
+Keep the commas and quotes intact: each field is `key: "value",` and each person is one `{ ... },`.
+
+## Adding photos
+
+Photos are picked up automatically by file name. No code change needed.
+
+1. Crop the photo roughly square (a face shot works best; it's shown in a circle).
+2. Name it after the person's id: their name in lowercase with dashes, e.g. `vidhi-kapuria.jpg`, `prayag-mohanty.png`, `bhavadharini.jpg`. `.jpg`, `.jpeg`, `.png` and `.webp` all work.
+3. On GitHub, open the [`photos/`](photos) folder, click **Add file → Upload files**, drop the images in and commit.
+
+Anyone without a photo gets their initials instead. To use a different file name, set `photo: "photos/whatever.jpg"` on that person. Keep photos under ~300 KB so the page stays fast.
 
 ## Running it
 

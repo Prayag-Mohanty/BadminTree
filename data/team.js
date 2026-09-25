@@ -16,10 +16,10 @@
  *   mentor        id of the senior who brought them in / mentored them,
  *                 e.g. "prayag-mohanty". Draws the "lineage" in the tree.
  *   instagram     Handle without the @.
- *   photo         Path to an image, e.g. "photos/vidhi-kapuria.jpg".
+ *   photo         Only needed if the picture isn't at photos/<id>.jpg.
+ *                 Photos named after the id (photos/vidhi-kapuria.jpg, .png,
+ *                 .jpeg or .webp) show up automatically.
  *   note          One line that tells a fresher who this person is.
- *   status        "current" or "alumni". If omitted it's worked out from
- *                 the batch year (see graduationYears below).
  *
  * Family fields (people who weren't on the roster but were part of the story:
  * coaches, managers, markers, hostel friends who never missed a match...)
@@ -28,10 +28,6 @@
 window.TEAM_DATA = {
   club: "IIT Bombay Badminton",
   instagram: "badmintonclub_iitbombay",
-
-  // A batch is treated as alumni once this many years have passed since
-  // they joined. Override per person with `status`.
-  graduationYears: 4,
 
   // Batches are keyed by the year the players joined the team.
   batches: {

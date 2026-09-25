@@ -89,7 +89,7 @@ window.TEAM_DATA = {
       { name: "Yaswanth Juluva" },
     ],
     2021: [
-      { name: "Tanay" },
+      { name: "Tanay Tayal" },
       { name: "Gopal" },
     ],
   },
@@ -174,9 +174,15 @@ window.TEAM_DATA = {
       name: "Institute Badminton League",
       year: 2025,
       results: [
-        { category: "Team Titans", place: 1, role: "Manager", who: "arshit-singh" },
-        { category: "Team Gladiators", place: 2, role: "Manager", who: "Vinamra" },
-        { category: "Team Vortex", place: 3, role: "Manager", who: "arjun-kabra" },
+        {
+          category: "Team Titans",
+          place: 1,
+          role: "Manager",
+          who: "arshit-singh",
+          members: ["prayag-mohanty", "kalp-rawat", "tanay-tayal", "Tejal Sharan", "suryakant-priyadarshan", "keshav-samdani"],
+        },
+        { category: "Team Gladiators", place: 2, role: "Manager", who: "Vinamra", members: ["prayash-sahu", "Jathin Sai Ganesh"] },
+        { category: "Team Vortex", place: 3, role: "Manager", who: "arjun-kabra", members: ["shlok-agrawal"] },
         { category: "Player of the Tournament (Men)", place: "award", who: "Jathin Sai Ganesh" },
         { category: "Player of the Tournament (Women)", place: "award", who: "bhavadharini-v" },
       ],

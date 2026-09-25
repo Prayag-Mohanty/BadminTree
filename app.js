@@ -39,10 +39,16 @@
   const meetFor = (year) => meets.find((m) => m.year === year) || { year };
   const PLACE = { 1: "Winner", 2: "Runner-up", 3: "Third", award: "Award" };
   // Every result, with the player resolved where the name matches someone on the tree.
+  const eventYear = (ev) => ev.yearLabel || ev.year || "";
   const results = (DATA.events || []).flatMap((ev) =>
-    (ev.results || []).map((r) => ({ ...r, event: ev.name, year: ev.year, player: byId.get(r.who) || null }))
+    (ev.results || []).map((r) => ({
+      ...r,
+      ev,
+      player: byId.get(r.who) || null,
+      members: r.members || [],
+    }))
   );
-  const resultsOf = (id) => results.filter((r) => r.player && r.player.id === id);
+  const resultsOf = (id) => results.filter((r) => (r.player && r.player.id === id) || r.members.includes(id));
   const placeLabel = (r) => r.label || PLACE[r.place] || String(r.place || "");
   const menteesOf = (id) => players.filter((p) => p.mentor === id);
 
@@ -96,7 +102,7 @@
           <div class="leaves">
             ${visible
               .map(
-                (p) => `<button class="leaf${p.interIIT.length ? " iit" : ""}" type="button" data-id="${p.id}">${avatar(p)}<span class="name">${esc(p.name)}${p.nicknames.length ? `<span class="nick">${esc(p.nicknames.join(" · "))}</span>` : ""}</span></button>`
+                (p) => `<button class="leaf${p.interIIT.length ? " iit" : ""}" type="button" data-id="${p.id}">${avatar(p)}<span class="name">${esc(p.shortName || p.name.split(" ")[0])}${p.nicknames.length ? `<span class="nick">${esc(p.nicknames.join(" · "))}</span>` : ""}</span></button>`
               )
               .join("")}
           </div>
@@ -323,6 +329,7 @@
   const scrim = document.getElementById("scrim");
   let lastFocus = null;
   let openId = null;
+  let currentTab = "tree";
 
   const personChips = (list) =>
     `<div class="people">${list.map((p) => `<button type="button" data-open="${p.id}">${esc(p.name)}${p.year ? " · " + short(p.year) : ""}</button>`).join("")}</div>`;
@@ -367,7 +374,7 @@
     const mentor = p.mentor && byId.get(p.mentor);
     const mentees = menteesOf(p.id);
     const batchmates = players.filter((o) => o.year === p.year && o.id !== p.id);
-    const wins = resultsOf(p.id).sort((a, b) => (b.year || 0) - (a.year || 0));
+    const wins = resultsOf(p.id).sort((a, b) => (b.ev.year || 0) - (a.ev.year || 0));
 
     drawer.innerHTML = `
       <button class="close" type="button" data-close>Close</button>
@@ -395,7 +402,11 @@
       ${
         wins.length
           ? `<h4>Results</h4><ul class="wins">${wins
-              .map((r) => `<li>${medal(r.place)}<span><b>${esc(placeLabel(r))}</b>, ${esc(r.category)}<br><span class="ev">${esc(r.event)}${r.year ? " " + r.year : ""}</span></span></li>`)
+              .map((r) => {
+                const part = r.player && r.player.id === p.id ? r.role : "";
+                const what = [placeLabel(r), r.category].filter(Boolean).map(esc);
+                return `<li>${medal(r.place)}<span>${what.length > 1 ? `<b>${what[0]}</b>, ${what[1]}` : `<b>${what[0]}</b>`}${part ? ` <span class="ev">(${esc(part)})</span>` : ""}<br><span class="ev">${esc(r.ev.name)} ${esc(eventYear(r.ev))}</span></span></li>`;
+              })
               .join("")}</ul>`
           : ""
       }
@@ -418,7 +429,7 @@
     drawer.hidden = true;
     scrim.hidden = true;
     openId = null;
-    try { history.replaceState(null, "", location.pathname + location.search); } catch (_) {}
+    try { history.replaceState(null, "", "#" + currentTab); } catch (_) {}
     lastFocus?.focus?.();
   }
 
@@ -435,8 +446,17 @@
     if (btn && !drawer.contains(btn)) openPlayer(btn.dataset.open);
   });
 
-  const who = (r) =>
-    r.player ? `<button class="who-link" type="button" data-open="${r.player.id}">${esc(r.player.name)}</button>` : `<span>${esc(r.who)}</span>`;
+  const person = (ref) => {
+    const p = byId.get(ref);
+    return p ? `<button class="who-link" type="button" data-open="${p.id}">${esc(p.name)}</button>` : `<span>${esc(ref)}</span>`;
+  };
+  const resultPeople = (r) => {
+    const bits = [];
+    if (r.who) bits.push(`${r.role ? `<span class="rrole">${esc(r.role)}</span> ` : ""}${person(r.who)}`);
+    if (r.members.length) bits.push(r.members.map(person).join(", "));
+    if (r.note) bits.push(`<span class="rnote">${esc(r.note)}</span>`);
+    return bits.length ? `<span class="nm">${bits.join("<br>")}</span>` : "";
+  };
 
   // ---------- Inter IIT ----------
   function renderInterIIT() {
@@ -472,11 +492,11 @@
     }
     el.innerHTML = `<div class="events">${events
       .map((ev) => {
-        const rows = results.filter((r) => r.event === ev.name && r.year === ev.year);
+        const rows = results.filter((r) => r.ev === ev);
         return `<article class="event">
-          <h3>${esc(ev.name)}${ev.year ? ` <span>${ev.year}</span>` : ""}</h3>
+          <h3>${esc(ev.name)} <span>${esc(eventYear(ev))}</span></h3>
           <ul>${rows
-            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span>${r.who || r.note ? `<span class="nm">${r.who ? who(r) : ""}${r.note ? `<span class="rnote">${r.who ? " · " : ""}${esc(r.note)}</span>` : ""}</span>` : ""}</li>`)
+            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span>${resultPeople(r)}</li>`)
             .join("")}</ul>
         </article>`;
       })
@@ -524,11 +544,38 @@
   systemDark.addEventListener?.("change", syncThemeBtn);
   syncThemeBtn();
 
-  renderTree();
   renderInterIIT();
   renderTrophies();
   renderFamily();
 
+  // ---------- Tabs ----------
+  // #tree, #inter-iit, #trophies, #family; a player id (#vidhi-kapuria) opens the tree with their card.
+  const TABS = ["tree", "inter-iit", "trophies", "family"];
+  let treeShown = false;
+  function showTab(name) {
+    if (!TABS.includes(name)) name = "tree";
+    currentTab = name;
+    document.querySelectorAll("[data-panel]").forEach((el) => (el.hidden = el.dataset.panel !== name));
+    document.querySelectorAll("[data-tab]").forEach((el) => el.setAttribute("aria-selected", String(el.dataset.tab === name)));
+    document.getElementById("tree-tools").hidden = name !== "tree";
+    if (name === "tree") {
+      if (!treeShown) renderTree();
+      else redraw();
+      treeShown = true;
+    }
+  }
+  document.querySelectorAll("[data-tab]").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      showTab(btn.dataset.tab);
+      try { history.replaceState(null, "", "#" + btn.dataset.tab); } catch (_) {}
+    })
+  );
+
   const hash = decodeURIComponent(location.hash.slice(1));
-  if (hash && byId.has(hash)) openPlayer(hash);
+  if (byId.has(hash)) {
+    showTab("tree");
+    openPlayer(hash);
+  } else {
+    showTab(hash);
+  }
 })();

@@ -6,13 +6,14 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 ## What's on the page
 
-- **The Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top and roots at the bottom. It grows from the roots when the page loads, and a shuttlecock drops down the trunk as you scroll. A gold ring around a photo marks an Inter IIT player.
-- **Player cards**: tap anyone for their nicknames, Inter IIT years, tournament results and their story.
-- **Search and filter**: by name, nickname or year, or show only Inter IIT players.
-- **Inter IIT**: each Inter IIT Sports Meet with its host and the squad that played.
-- **Trophy cabinet**: institute tournaments and awards, grouped by event.
-- **Extended family**: people who weren't on the roster but were part of the story.
-- **Deep links**: `…/#vidhi-kapuria` opens that player's card directly.
+Four tabs:
+
+- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year).
+- **Inter IIT**: each Inter IIT Sports Meet with its host, result and squad.
+- **Trophy Cabinet**: every tournament, league and award, newest first, with team rosters.
+- **Family**: coaches and everyone else who was part of the story.
+
+Links: `…/#trophies`, `…/#inter-iit`, `…/#family` open a tab; `…/#vidhi-kapuria` opens that player's card. There's a light/dark toggle at the top.
 
 ## Editing the data
 
@@ -31,7 +32,8 @@ Everything lives in [`data/team.js`](data/team.js); the field list is at the top
 
 - **New batch**: add a year under `batches`, e.g. `2027: [{ name: "New Fresher" }]`.
 - **Inter IIT**: add the meet to `interIITMeets` (`{ year, host, result }`) and `{ year, position }` to each player who played.
-- **Results**: add a tournament to `events`, with one line per result naming the player by id (or by plain name if they're not on the tree).
+- **Results**: add a tournament to `events`, with one line per result. Name people by id (or by plain name if they're not on the tree); team results can list a captain/manager (`role` + `who`) and `members`.
+- **Short names**: the tree shows first names; set `shortName` if someone goes by something else.
 - **Year unknown**: people in `yearUnknown` sit at the roots under a "?" until you move them into a batch.
 
 ## Stories

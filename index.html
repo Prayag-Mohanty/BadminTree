@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IITB Badminton Tree</title>
+<meta name="description" content="Every player of the IIT Bombay Badminton team, batch by batch.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Figtree:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!--BODY-->
+<header class="hero wrap">
+  <p class="eyebrow">IIT Bombay · Badminton</p>
+  <h1>The <span>Team</span> Tree</h1>
+  <p class="lede">Every player who has worn the jersey, batch by batch, from the roots up to this year's freshers. Tap a name to meet them.</p>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <input id="search" class="search" type="search" aria-label="Search players" placeholder="Search a name, nickname or year" autocomplete="off">
+    <div class="chips" role="group" aria-label="Filter by status">
+      <button class="chip" type="button" data-status="all" aria-pressed="true">Everyone</button>
+      <button class="chip" type="button" data-status="current" aria-pressed="false">Current squad</button>
+      <button class="chip" type="button" data-status="alumni" aria-pressed="false">Alumni</button>
+    </div>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#trophy-cabinet">Trophies</a>
+      <a href="#extended-family">Family</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="section" aria-labelledby="tree-h">
+    <h2 id="tree-h">The Tree</h2>
+    <p class="sub">Each ring on the trunk is the year a batch joined the team. Hover a player to light up who brought them in and who they brought in.</p>
+    <div class="tree" id="tree"></div>
+  </section>
+
+  <section class="section" id="trophy-cabinet" aria-labelledby="trophy-h">
+    <h2 id="trophy-h">Trophy Cabinet</h2>
+    <p class="sub">Team and individual results, newest first.</p>
+    <div id="trophies"></div>
+  </section>
+
+  <section class="section" id="extended-family" aria-labelledby="family-h">
+    <h2 id="family-h">Extended Family</h2>
+    <p class="sub">Not always on the roster, always part of the story.</p>
+    <div id="family"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  Follow the club on Instagram: <a href="https://www.instagram.com/badmintonclub_iitbombay/" target="_blank" rel="noopener">@badmintonclub_iitbombay</a>.
+  Missing someone or got a detail wrong? Edit <code>data/team.js</code>.
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden></aside>
+
+<script src="data/team.js"></script>
+<script src="app.js"></script>
+<!--/BODY-->
+</body>
+</html>

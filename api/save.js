@@ -89,7 +89,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (!process.env.GITHUB_TOKEN) {
-    return res.status(503).json({ error: "Editing isn't switched on yet: the site owner needs to add GITHUB_TOKEN in Vercel." });
+    return res.status(503).json({ error: "Editing isn't switched on yet. The site owner needs to add GITHUB_TOKEN in Vercel (Settings → Environment Variables, Production) and then redeploy." });
   }
   // GET tells the page whether a passcode is needed.
   if (req.method === "GET") return res.status(200).json({ ok: true, passcode: Boolean(process.env.EDIT_PASSCODE) });

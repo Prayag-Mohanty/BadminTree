@@ -561,8 +561,8 @@ main .section { padding-block: 36px 24px; }
   mask: var(--src) center / contain no-repeat;
 }
 .logo-panther { --src: url("assets/iitb-panther.svg"); height: 42px; aspect-ratio: 119 / 114; }
-.logo-sports { --src: url("assets/iitb-sports.svg"); height: 44px; aspect-ratio: 115 / 126; background-color: var(--red); }
-.logo-club { --src: url("assets/badminton-club.svg"); height: 52px; aspect-ratio: 283 / 317; background-color: var(--gold); }
+.logo-sports { --src: url("assets/iitb-sports.svg"); height: 44px; aspect-ratio: 115 / 126; }
+.logo-club { --src: url("assets/badminton-club.svg"); height: 52px; aspect-ratio: 283 / 317; }
 .org-logos .sep { width: 1px; height: 34px; background: var(--line); }
 .hero h1 { font-size: clamp(44px, 12vw, 140px); color: var(--ink); margin-top: 22px; }
 .hero { padding-block: 28px 30px; }

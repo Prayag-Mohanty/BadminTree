@@ -1,5 +1,5 @@
 /*
- * IIT Bombay Badminton Team Tree: the data.
+ * BadminTree: the data.
  *
  * Everything on the site comes from this file, plus photos/ and stories/.
  * Every field except `name` is optional; leave out what you don't know.
@@ -46,7 +46,7 @@ window.TEAM_DATA = {
   instagram: "badmintonclub_iitbombay",
 
   // Where the site's "Write story" buttons point.
-  github: { repo: "Prayag-Mohanty/IITB-Badminton-Team-Tree", branch: "main" },
+  github: { repo: "Prayag-Mohanty/BadminTree", branch: "main" },
 
   // Batches are keyed by the year the players joined IIT Bombay.
   batches: {

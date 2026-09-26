@@ -521,7 +521,7 @@ code { background: var(--glass); }
 .search { flex-basis: 200px; }
 
 /* ---------- Tabs ---------- */
-.controls .wrap { flex-direction: column; align-items: stretch; gap: 10px; }
+.controls .wrap { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 10px; }
 .tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
 .tab {
   flex: none;
@@ -562,18 +562,16 @@ main .section { padding-block: 36px 24px; }
 }
 .logo-panther { --src: url("assets/iitb-panther.svg"); height: 42px; aspect-ratio: 119 / 114; }
 .logo-sports { --src: url("assets/iitb-sports.svg"); height: 44px; aspect-ratio: 115 / 126; background-color: var(--red); }
-.logo-club { --src: url("assets/badminton-club.svg"); height: 64px; aspect-ratio: 283 / 317; background-color: var(--gold); }
+.logo-club { --src: url("assets/badminton-club.svg"); height: 52px; aspect-ratio: 283 / 317; background-color: var(--gold); }
 .org-logos .sep { width: 1px; height: 34px; background: var(--line); }
-.hero h1 { font-size: clamp(56px, 13vw, 140px); color: var(--ink); margin-top: 22px; }
-.hero-right { display: flex; align-items: center; gap: 16px; }
+.hero h1 { font-size: clamp(44px, 12vw, 140px); color: var(--ink); margin-top: 22px; }
 .hero { padding-block: 28px 30px; }
 footer .stats { margin: 0 0 10px; }
 footer p { margin: 0; }
 @media (max-width: 520px) {
   .org-logos { gap: 12px; }
   .logo-panther, .logo-sports { height: 34px; }
-  .logo-club { height: 48px; }
-  .hero-right { gap: 10px; }
+  .logo-club { height: 40px; }
 }
 
 /* ---------- Trophy cabinet ---------- */
@@ -682,7 +680,8 @@ footer p { margin: 0; }
 .squad-chip.plain { padding-left: 14px; cursor: default; }
 @media (max-width: 560px) {
   .tab { font-size: 16px; padding-inline: 6px; }
-  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -20px; padding-inline: 20px; }
+  .tree-tools { flex-wrap: wrap; min-width: 0; }
+  .chips { flex: 1 1 100%; min-width: 0; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -20px; padding-inline: 20px; }
   .chips::-webkit-scrollbar { display: none; }
   .chip { flex: none; }
   .tree-tools { gap: 8px; }

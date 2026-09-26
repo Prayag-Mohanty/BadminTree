@@ -757,3 +757,4 @@ button.family-card { font: inherit; color: inherit; text-align: left; width: 100
 button.family-card:hover { border-color: var(--gold); }
 .family-card .role, .family-card .fnote { display: block; }
 .family-card .fnote { margin-top: 4px; font-size: 13px; color: var(--muted); }
+.meet header:last-child { margin-bottom: 0; }

@@ -702,13 +702,16 @@
         const squadList = players.filter((p) => p.interIIT.some((t) => t.year === m.year));
         return `<article class="meet">
           <header><span class="meet-year">${esc(m.year)}</span><span class="meet-host">${esc([m.host, m.edition ? m.edition + " Inter IIT Sports Meet" : ""].filter(Boolean).join(" · "))}</span>${m.result ? `<span class="meet-result">${esc(m.result)}</span>` : ""}</header>
-          ${squadList.length ? "" : `<p class="hint">Squad not added yet. Add <code>{ year: ${esc(m.year)} }</code> to each player's <code>interIIT</code>.</p>`}
-          <div class="meet-squad">${squadList
-            .map((p) => {
-              const t = p.interIIT.find((x) => x.year === m.year);
-              return `<button type="button" class="squad-chip" data-open="${p.id}">${avatar(p)}<span>${esc(p.name)}${t.position ? `<small>${esc(t.position)}</small>` : ""}</span></button>`;
-            })
-            .join("")}</div>
+          ${
+            squadList.length
+              ? `<div class="meet-squad">${squadList
+                  .map((p) => {
+                    const t = p.interIIT.find((x) => x.year === m.year);
+                    return `<button type="button" class="squad-chip" data-open="${p.id}">${avatar(p)}<span>${esc(p.name)}${t.position ? `<small>${esc(t.position)}</small>` : ""}</span></button>`;
+                  })
+                  .join("")}</div>`
+              : ""
+          }
         </article>`;
       })
       .join("");

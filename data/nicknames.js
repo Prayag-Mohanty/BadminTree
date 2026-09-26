@@ -7,5 +7,8 @@ window.EXTRA_NICKNAMES = {
   ],
   "yajat-sharma": [
     "Maggi"
+  ],
+  "arjun-kabra": [
+    "Abra ka Kabra"
   ]
 };

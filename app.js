@@ -373,16 +373,29 @@
     (n) => `The canon lore of ${n} lives somewhere in the team chat. Help get it on here.`,
     (n) => `${n}'s lore is loading… forever, unless someone writes it. That someone could be you.`,
   ];
+  // Shown under lore that's already written, inviting more.
+  const MORE_LORE = [
+    (n) => `Know a ${n} story that isn't here? The lore can always grow.`,
+    (n) => `There's surely more to ${n} than this. Add a chapter.`,
+    (n) => `Got a match, a moment or a legend about ${n}? Add it to the lore.`,
+    (n) => `${n}'s lore is canon, but not complete. Your turn.`,
+  ];
+
   // Lines rotate in tree order, so neighbours on the tree read differently.
   const loreOrder = [...byId.keys()];
   const noLoreLine = (p, first) => NO_LORE[Math.max(0, loreOrder.indexOf(p.id)) % NO_LORE.length](first);
+  const moreLoreLine = (p, first) => MORE_LORE[Math.max(0, loreOrder.indexOf(p.id)) % MORE_LORE.length](first);
 
   function renderStory(p, text) {
     const box = drawer.querySelector(".story");
     if (!box) return;
     const first = esc(p.name.split(" ")[0]);
     box.innerHTML = text
-      ? md(text)
+      ? `${md(text)}${
+          EDIT_API
+            ? `<p class="hint lore-more">${moreLoreLine(p, first)}</p><button type="button" class="story-write" data-edit>Add to ${first}'s lore</button>`
+            : ""
+        }`
       : `<p class="hint">${noLoreLine(p, first)}</p>${EDIT_API ? `<button type="button" class="story-write" data-edit>Write ${first}'s lore</button>` : ""}`;
   }
 

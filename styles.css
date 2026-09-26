@@ -745,9 +745,6 @@ button.story-write { border: 0; font: inherit; font-weight: 600; font-size: 14px
 }
 .editor input[type="file"] { font-size: 13px; max-width: 100%; }
 .ed-photo-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.ed-token { font-size: 13.5px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
-.ed-token p, .ed-token ol { margin: 0; }
-.ed-token ol { padding-left: 18px; display: grid; gap: 3px; }
 .ed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .ed-actions button {
   font: inherit; font-size: 14px; font-weight: 600;
@@ -756,7 +753,6 @@ button.story-write { border: 0; font: inherit; font-weight: 600; font-size: 14px
 }
 .ed-actions .ed-save { background: var(--red); border-color: var(--red); color: var(--on-accent); }
 .ed-actions .ed-save:disabled { opacity: 0.6; cursor: progress; }
-.ed-actions .ed-forget { margin-left: auto; font-weight: 400; font-size: 12.5px; border-color: transparent; color: var(--muted); }
 .ed-status { margin: 0; font-size: 13.5px; min-height: 1.2em; }
 .ed-done { clear: both; margin: 16px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--surface-2); font-size: 14px; }
 

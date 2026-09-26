@@ -60,15 +60,20 @@ Keep the commas and quotes intact: each field is `key: "value",` and each person
 
 ## Editing from the site
 
-Every card (players and coaches) has an **Edit** button. From there you can rewrite the story, replace the profile photo, and add photos to the person's gallery. **Save** writes the changes straight to this repo, and the live site updates for everyone in about a minute.
+Every card (players and coaches) has an **Edit** button: rewrite the story, replace the profile photo, or add photos to the person's gallery. Anyone can edit; no GitHub account needed. **Save** writes the change to this repo and the site updates in about a minute.
 
-Saving needs a GitHub access token, set up once per browser:
+Saving goes through a small function, [`api/save.js`](api/save.js), which runs on Vercel and holds the only GitHub token. It only accepts edits to people already on the site, and only stories and JPEG photos. Every edit is a normal commit, so anything unwanted can be reverted from the repo's history.
 
-1. You need write access to this repo. The owner adds teammates under **Settings → Collaborators → Add people**.
-2. [Create a fine-grained token](https://github.com/settings/personal-access-tokens/new) named `BadminTree`.
-3. Under **Repository access**, choose **Only select repositories → BadminTree**.
-4. Under **Repository permissions**, set **Contents** to **Read and write**. Generate it and copy it.
-5. Paste it the first time you press Edit. It stays in that browser only; **Forget my token** removes it.
+### One-time setup (site owner)
+
+1. Import this repo on [Vercel](https://vercel.com/new) (Framework preset: **Other**) and deploy.
+2. [Create a fine-grained GitHub token](https://github.com/settings/personal-access-tokens/new): **Only select repositories → BadminTree**, **Contents: Read and write**.
+3. In Vercel → Project → **Settings → Environment Variables**, add:
+   - `GITHUB_TOKEN`: the token from step 2 (required).
+   - `EDIT_PASSCODE`: optional. If set, editors enter this passcode once per device (share it in the team group). Leave it out to let anyone edit.
+4. Redeploy (Deployments → ⋯ → Redeploy) so the variables take effect.
+
+The Edit button appears on the Vercel site. To also show it on GitHub Pages, set `editApi` in `data/team.js` to `https://<your-vercel-domain>/api/save`.
 
 What gets saved where:
 

@@ -1,6 +1,6 @@
 # BadminTree
 
-The tree of the IIT Bombay Badminton team: every player batch by batch, with their nicknames, Inter IIT years, results and stories, plus the club's leadership, coaches and trophy cabinet.
+The tree of the IIT Bombay Badminton team: every player batch by batch, with their nicknames, Inter IIT years, results and lore, plus the club's leadership, coaches and trophy cabinet.
 
 Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
@@ -10,7 +10,7 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 Three tabs:
 
-- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, roles, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). Club Leadership (secretary and convenors by year) and the coaches sit below the tree.
+- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, roles, Inter IIT years, results and lore. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). Club Leadership (secretary and convenors by year) and the coaches sit below the tree.
 - **Inter IIT**: each Inter IIT Sports Meet with its host, result and squad, including captains.
 - **Trophy Cabinet**: one dropdown per tournament, split into inter-college and on-campus. Year buttons switch between editions; each category shows its podium.
 
@@ -21,7 +21,7 @@ Links: `…/#inter-iit` and `…/#trophies` open a tab; `…/#vidhi-kapuria` ope
 | Path | What it holds |
 | --- | --- |
 | `data/team.js` | All the content: players, Inter IIT meets, results, leadership, coaches |
-| `stories/<id>.md` | One story file per person |
+| `stories/<id>.md` | Each person's lore (one file per person) |
 | `photos/<id>.jpg` | One profile photo per person (picked up automatically) |
 | `gallery/<id>/` | Extra photos of that person, shown on their card |
 | `assets/` | Logos as single-colour SVGs, recoloured by the theme |
@@ -60,9 +60,9 @@ Keep the commas and quotes intact: each field is `key: "value",` and each person
 
 ## Editing from the site
 
-Every card (players and coaches) has an **Edit** button: rewrite the story, replace the profile photo, or add photos to the person's gallery. Anyone can edit; no GitHub account needed. **Save** writes the change to this repo and the site updates in about a minute.
+Every card (players and coaches) has an **Edit** button: rewrite their lore, replace the profile photo, or add photos to the person's gallery. Anyone can edit; no GitHub account needed. **Save** writes the change to this repo and the site updates in about a minute.
 
-Saving goes through a small function, [`api/save.js`](api/save.js), which runs on Vercel and holds the only GitHub token. It only accepts edits to people already on the site, and only stories and JPEG photos. Every edit is a normal commit, so anything unwanted can be reverted from the repo's history.
+Saving goes through a small function, [`api/save.js`](api/save.js), which runs on Vercel and holds the only GitHub token. It only accepts edits to people already on the site, and only lore and JPEG photos. Every edit is a normal commit, so anything unwanted can be reverted from the repo's history.
 
 ### One-time setup (site owner)
 
@@ -79,13 +79,13 @@ What gets saved where:
 
 | Change | File |
 | --- | --- |
-| Story | `stories/<id>.md` |
+| Lore | `stories/<id>.md` |
 | Profile photo (cropped square, 480 px) | `photos/<id>.jpg` |
 | Gallery photos (up to 1600 px) | `gallery/<id>/<timestamp>.jpg` |
 
-## Stories
+## Lore
 
-Each person's story is a text file: `stories/<id>.md`. Blank lines start new paragraphs; `*italics*` and `**bold**` work. Several stories can live in one file (the site shows them in order), which is how the Know Your Team write-ups from different years stack up. The easiest way to write one is the **Edit** button on their card.
+Each person's lore is a text file: `stories/<id>.md`. Blank lines start new paragraphs; `*italics*` and `**bold**` work. Several write-ups can live in one file (the site shows them in order), which is how the Know Your Team write-ups from different years stack up. The easiest way to write it is the **Edit** button on their card.
 
 ## Adding photos
 
@@ -106,7 +106,7 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-Opening `index.html` directly works too, but stories only load when the folder is served.
+Opening `index.html` directly works too, but lore only loads when the folder is served.
 
 ## Publishing on GitHub Pages
 

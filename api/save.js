@@ -108,7 +108,7 @@ module.exports = async function handler(req, res) {
 
     if (kind === "story") {
       if (typeof content !== "string" || content.length > LIMITS.story) {
-        return res.status(400).json({ error: `Stories can be up to ${LIMITS.story.toLocaleString("en")} characters.` });
+        return res.status(400).json({ error: `Lore can be up to ${LIMITS.story.toLocaleString("en")} characters.` });
       }
       const text = content.replace(/\r\n/g, "\n").trim();
       await putFile(`stories/${id}.md`, Buffer.from(text + "\n", "utf8").toString("base64"), `Update ${id}'s story`);

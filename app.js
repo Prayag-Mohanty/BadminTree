@@ -364,13 +364,26 @@
   const gh = DATA.github || {};
   let currentStory = null; // story text of the open card, as loaded
 
+  // Shown when someone's lore hasn't been written. Each person always gets the same line.
+  const NO_LORE = [
+    (n) => `${n} has some interesting canon lore. We just haven't written it yet. You can, if you want.`,
+    (n) => `${n}'s lore exists. It just hasn't made it onto the page yet. Care to do the honours?`,
+    (n) => `Legend says ${n} has lore. Nobody has written it down yet. Could be you.`,
+    (n) => `${n}'s lore is still unwritten. If you know the tales, this is your cue.`,
+    (n) => `The canon lore of ${n} lives somewhere in the team chat. Help get it on here.`,
+    (n) => `${n}'s lore is loading… forever, unless someone writes it. That someone could be you.`,
+  ];
+  // Lines rotate in tree order, so neighbours on the tree read differently.
+  const loreOrder = [...byId.keys()];
+  const noLoreLine = (p, first) => NO_LORE[Math.max(0, loreOrder.indexOf(p.id)) % NO_LORE.length](first);
+
   function renderStory(p, text) {
     const box = drawer.querySelector(".story");
     if (!box) return;
     const first = esc(p.name.split(" ")[0]);
     box.innerHTML = text
       ? md(text)
-      : `<p class="hint">Nobody has written ${first}'s story yet.</p>${EDIT_API ? `<button type="button" class="story-write" data-edit>Write ${first}'s story</button>` : ""}`;
+      : `<p class="hint">${noLoreLine(p, first)}</p>${EDIT_API ? `<button type="button" class="story-write" data-edit>Write ${first}'s lore</button>` : ""}`;
   }
 
   async function loadStory(p) {
@@ -468,8 +481,8 @@
       <label class="ed-label" for="ed-photo">Profile photo</label>
       <div class="ed-photo-row">${avatar(p)}<input id="ed-photo" type="file" accept="image/*"></div>
       <p class="ed-help">Cropped to a square from the centre, so a face in the middle works best.</p>
-      <label class="ed-label" for="ed-story">Story</label>
-      <textarea id="ed-story" rows="9" placeholder="Who are they on court and off it? The matches and moments the team remembers.">${esc(currentStory || "")}</textarea>
+      <label class="ed-label" for="ed-story">Lore</label>
+      <textarea id="ed-story" rows="9" placeholder="Who are they on court and off it? The matches, the moments, the legends the team still talks about.">${esc(currentStory || "")}</textarea>
       <p class="ed-help">Leave a blank line between paragraphs. *italics* and **bold** work.</p>
       <label class="ed-label" for="ed-gallery">Add photos to ${first}'s gallery</label>
       <input id="ed-gallery" type="file" accept="image/*" multiple>
@@ -503,11 +516,11 @@
       const done = [];
       try {
         if (storyChanged) {
-          status.textContent = "Saving story…";
+          status.textContent = "Saving lore…";
           await saveToSite({ id: p.id, kind: "story", content: story });
           currentStory = story;
           renderStory(p, story);
-          done.push("story");
+          done.push("lore");
         }
         if (photo) {
           status.textContent = "Saving profile photo…";
@@ -622,7 +635,7 @@
               .join("")}</ul>`
           : ""
       }
-      <h4>Story</h4>
+      <h4>Lore</h4>
       <div class="story"><p class="hint">Loading…</p></div>
       <div class="gallery-wrap" hidden><h4>Photos</h4><div class="gallery"></div></div>
       ${mentor ? `<h4>Brought in by</h4>${personChips([mentor])}` : ""}

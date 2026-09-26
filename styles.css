@@ -674,7 +674,7 @@ footer p { margin: 0; }
 }
 .term.now { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--glass-shadow); }
 .term-year { font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
-.term-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: center; }
+.term-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: baseline; }
 .term-role { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .term-people { display: flex; flex-wrap: wrap; gap: 6px; }
 .squad-chip.plain { padding-left: 14px; cursor: default; }
@@ -687,3 +687,73 @@ footer p { margin: 0; }
   .tree-tools { gap: 8px; }
   .search { flex-basis: 100%; }
 }
+
+/* ---------- Card actions, editor, gallery ---------- */
+.drawer-actions { float: right; display: flex; gap: 8px; }
+.drawer .drawer-actions .close { float: none; }
+.edit-btn {
+  font: inherit; font-size: 13px; font-weight: 600;
+  color: var(--on-accent); background: var(--blue);
+  border: 0; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+.edit-btn:hover { filter: brightness(1.08); }
+button.story-write { border: 0; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; }
+
+.editor {
+  clear: both;
+  margin: 18px 0 4px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  box-shadow: var(--glass-shadow);
+  display: grid;
+  gap: 8px;
+}
+.editor h4 { margin: 0 0 4px; }
+.ed-label { font-weight: 600; font-size: 14px; margin-top: 6px; }
+.ed-help { margin: 0; font-size: 12.5px; color: var(--muted); }
+.editor textarea, .editor input[type="password"] {
+  font: inherit; font-size: 14.5px; line-height: 1.55;
+  color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; width: 100%; resize: vertical;
+}
+.editor input[type="file"] { font-size: 13px; max-width: 100%; }
+.ed-photo-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ed-token { font-size: 13.5px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; }
+.ed-token p, .ed-token ol { margin: 0; }
+.ed-token ol { padding-left: 18px; display: grid; gap: 3px; }
+.ed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.ed-actions button {
+  font: inherit; font-size: 14px; font-weight: 600;
+  border-radius: 999px; padding: 7px 16px; cursor: pointer;
+  border: 1.5px solid var(--line); background: transparent; color: var(--ink);
+}
+.ed-actions .ed-save { background: var(--red); border-color: var(--red); color: var(--on-accent); }
+.ed-actions .ed-save:disabled { opacity: 0.6; cursor: progress; }
+.ed-actions .ed-forget { margin-left: auto; font-weight: 400; font-size: 12.5px; border-color: transparent; color: var(--muted); }
+.ed-status { margin: 0; font-size: 13.5px; min-height: 1.2em; }
+.ed-done { clear: both; margin: 16px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--surface-2); font-size: 14px; }
+
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.thumb { padding: 0; border: 0; border-radius: 8px; overflow: hidden; cursor: zoom-in; aspect-ratio: 1; background: var(--surface-2); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; place-items: center;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: rgba(5, 8, 20, 0.88); cursor: zoom-out;
+}
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+.lightbox .close {
+  position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: 14px;
+  font: inherit; font-size: 13px; font-weight: 600; color: #fff;
+  background: rgba(255, 255, 255, 0.16); border: 0; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+}
+
+/* Coach cards open a profile */
+button.family-card { font: inherit; color: inherit; text-align: left; width: 100%; cursor: pointer; }
+button.family-card:hover { border-color: var(--gold); }
+.family-card .role, .family-card .fnote { display: block; }
+.family-card .fnote { margin-top: 4px; font-size: 13px; color: var(--muted); }

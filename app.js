@@ -42,6 +42,11 @@
     (l.convenors || []).forEach((id) => leadRoles.set(id, [...(leadRoles.get(id) || []), `Badminton Convenor ${l.year}`]));
   });
   players.forEach((p) => (p.roles = [...(leadRoles.get(p.id) || []), ...p.roles]));
+  // Coaches get cards too (but no place on the tree).
+  (DATA.family || []).forEach((f) => {
+    const id = f.id || slug(f.name);
+    if (!byId.has(id)) byId.set(id, { ...f, id, coach: true, year: null, nicknames: [], roles: [f.role].filter(Boolean), interIIT: [] });
+  });
   const batchKeys = [...years, ...((DATA.yearUnknown || []).length ? [null] : [])];
 
   const meets = [...(DATA.interIITMeets || [])].sort((a, b) => b.year - a.year);
@@ -74,7 +79,7 @@
   const avatar = (p, big) => {
     const id = p.id || slug(p.name);
     const src = p.photo || `photos/${id}.${PHOTO_EXTS[0]}`;
-    return `<span class="avatar${big ? " lg" : ""}" style="background:${colorFor(id)}" aria-hidden="true">${esc(initials(p.name))}<img src="${esc(src)}" alt="" loading="lazy" data-id="${esc(id)}"${p.photo ? ' data-fixed="1"' : ""} onerror="__nextPhoto(this)"></span>`;
+    return `<span class="avatar${big ? " lg" : ""}" data-avatar="${esc(id)}" style="background:${colorFor(id)}" aria-hidden="true">${esc(initials(p.name))}<img src="${esc(src)}" alt="" loading="lazy" data-id="${esc(id)}"${p.photo ? ' data-fixed="1"' : ""} onerror="__nextPhoto(this)"></span>`;
   };
 
   // ---------- Stats ----------
@@ -354,26 +359,231 @@
       .join("");
 
   const gh = DATA.github || {};
-  const storyLink = (id, exists) =>
-    gh.repo
-      ? exists
-        ? `https://github.com/${gh.repo}/edit/${gh.branch || "main"}/stories/${id}.md`
-        : `https://github.com/${gh.repo}/new/${gh.branch || "main"}/stories?filename=${id}.md`
-      : "";
+  const repoName = gh.repo ? gh.repo.split("/")[1] : "";
+  let currentStory = null; // story text of the open card, as loaded
+
+  function renderStory(p, text) {
+    const box = drawer.querySelector(".story");
+    if (!box) return;
+    const first = esc(p.name.split(" ")[0]);
+    box.innerHTML = text
+      ? md(text)
+      : `<p class="hint">Nobody has written ${first}'s story yet.</p>${gh.repo ? `<button type="button" class="story-write" data-edit>Write ${first}'s story</button>` : ""}`;
+  }
 
   async function loadStory(p) {
-    const box = drawer.querySelector(".story");
     let text = null;
     try {
       const res = await fetch(`stories/${p.id}.md`, { cache: "no-cache" });
       if (res.ok) text = await res.text();
     } catch (_) {}
     if (openId !== p.id) return; // another card was opened meanwhile
-    const link = storyLink(p.id, !!text);
-    box.innerHTML = text
-      ? `${md(text)}${link ? `<a class="story-edit" href="${link}" target="_blank" rel="noopener">Edit story</a>` : ""}`
-      : `<p class="hint">Nobody has written ${esc(p.name.split(" ")[0])}'s story yet.</p>${link ? `<a class="story-write" href="${link}" target="_blank" rel="noopener">Write their story</a>` : ""}`;
+    currentStory = text;
+    renderStory(p, text);
   }
+
+  // ---------- Editing on the site ----------
+  // Saves straight to the GitHub repo, using a fine-grained access token that
+  // stays in this browser. The live site redeploys about a minute later.
+  const API = "https://api.github.com";
+  const BRANCH = gh.branch || "main";
+  const TOKEN_KEY = "badmintree-github-token";
+  const getToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (_) { return ""; } };
+  const setToken = (t) => { try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch (_) {} };
+  const bytesB64 = (bytes) => {
+    let s = "";
+    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  };
+  const textB64 = (t) => bytesB64(new TextEncoder().encode(t));
+
+  const ghFetch = (path, opts = {}) => {
+    const token = getToken();
+    return fetch(`${API}/repos/${gh.repo}/${path}`, {
+      ...opts,
+      headers: { Accept: "application/vnd.github+json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(opts.headers || {}) },
+    });
+  };
+
+  async function putFile(path, contentB64, message) {
+    let sha;
+    const cur = await ghFetch(`contents/${path}?ref=${BRANCH}`, { cache: "no-store" });
+    if (cur.ok) sha = (await cur.json()).sha;
+    else if (cur.status === 401) { const e = new Error("unauthorized"); e.status = 401; throw e; }
+    const res = await ghFetch(`contents/${path}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, content: contentB64, branch: BRANCH, ...(sha ? { sha } : {}) }),
+    });
+    if (!res.ok) { const e = new Error(`GitHub replied ${res.status}`); e.status = res.status; throw e; }
+  }
+
+  // Reads an image file, optionally crops it square, shrinks it and re-encodes as JPEG.
+  async function toJpeg(file, { square = false, max = 1600, quality = 0.84 } = {}) {
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((resolve, reject) => {
+        const i = new Image();
+        i.onload = () => resolve(i);
+        i.onerror = () => reject(new Error(`"${file.name}" isn't an image this browser can open. Try a JPG or PNG.`));
+        i.src = url;
+      });
+      let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+      if (square) { const s = Math.min(sw, sh); sx = (sw - s) / 2; sy = (sh - s) / 2; sw = sh = s; }
+      const scale = Math.min(1, max / Math.max(sw, sh));
+      const c = document.createElement("canvas");
+      c.width = Math.round(sw * scale);
+      c.height = Math.round(sh * scale);
+      c.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
+      const dataUrl = c.toDataURL("image/jpeg", quality);
+      return { dataUrl, b64: dataUrl.split(",")[1] };
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  const saveError = (err) =>
+    err.status === 401
+      ? "GitHub didn't accept that token. Check it was copied in full, or create a new one."
+      : err.status === 403 || err.status === 404
+      ? `That token can't write to ${repoName}. Give it access to the ${repoName} repo with Contents set to "Read and write".`
+      : err.status === 409 || err.status === 422
+      ? "Someone else saved this at the same moment. Press Save again."
+      : err.message && !err.status
+      ? err.message
+      : "Couldn't reach GitHub. Check your connection and press Save again.";
+
+  function openEditor(p) {
+    const slot = drawer.querySelector(".editor-slot");
+    if (!slot || !gh.repo) return;
+    const first = esc(p.name.split(" ")[0]);
+    const needsToken = !getToken();
+    slot.innerHTML = `<form class="editor" novalidate>
+      <h4>Edit ${first}'s profile</h4>
+      ${
+        needsToken
+          ? `<div class="ed-token">
+              <p><b>One-time setup.</b> Saving writes to the ${esc(repoName)} repo on GitHub, so this browser needs a GitHub access token. You need to be a collaborator on the repo.</p>
+              <ol>
+                <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token</a> named <code>${esc(repoName)}</code>.</li>
+                <li>Under <b>Repository access</b>, choose <b>Only select repositories</b>, then <b>${esc(repoName)}</b>.</li>
+                <li>Under <b>Repository permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Generate it and copy it.</li>
+              </ol>
+              <label class="ed-label" for="ed-token">Paste your token</label>
+              <input id="ed-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+              <p class="ed-help">It stays in this browser and is only used to save to ${esc(repoName)}.</p>
+            </div>`
+          : ""
+      }
+      <label class="ed-label" for="ed-photo">Profile photo</label>
+      <div class="ed-photo-row">${avatar(p)}<input id="ed-photo" type="file" accept="image/*"></div>
+      <p class="ed-help">Cropped to a square from the centre, so a face in the middle works best.</p>
+      <label class="ed-label" for="ed-story">Story</label>
+      <textarea id="ed-story" rows="9" placeholder="Who are they on court and off it? The matches and moments the team remembers.">${esc(currentStory || "")}</textarea>
+      <p class="ed-help">Leave a blank line between paragraphs. *italics* and **bold** work.</p>
+      <label class="ed-label" for="ed-gallery">Add photos to ${first}'s gallery</label>
+      <input id="ed-gallery" type="file" accept="image/*" multiple>
+      <div class="ed-actions">
+        <button type="submit" class="ed-save">Save</button>
+        <button type="button" class="ed-cancel">Cancel</button>
+        ${needsToken ? "" : `<button type="button" class="ed-forget">Forget my token</button>`}
+      </div>
+      <p class="ed-status" role="status"></p>
+    </form>`;
+    const form = slot.querySelector("form");
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    form.querySelector(".ed-cancel").addEventListener("click", () => (slot.innerHTML = ""));
+    form.querySelector(".ed-forget")?.addEventListener("click", () => { setToken(""); openEditor(p); });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const status = form.querySelector(".ed-status");
+      const tokenInput = form.querySelector("#ed-token");
+      if (tokenInput) {
+        const t = tokenInput.value.trim();
+        if (!t) { status.textContent = "Paste your GitHub token first (steps above)."; tokenInput.focus(); return; }
+        setToken(t);
+      }
+      const photo = form.querySelector("#ed-photo").files[0];
+      const extras = [...form.querySelector("#ed-gallery").files];
+      const story = form.querySelector("#ed-story").value.replace(/\r\n/g, "\n").trim();
+      const storyChanged = story !== (currentStory || "").trim();
+      if (!photo && !extras.length && !storyChanged) { status.textContent = "Nothing has changed yet."; return; }
+
+      const saveBtn = form.querySelector(".ed-save");
+      saveBtn.disabled = true;
+      const done = [];
+      try {
+        if (storyChanged) {
+          status.textContent = "Saving story…";
+          await putFile(`stories/${p.id}.md`, textB64(story + "\n"), `Update ${p.name}'s story`);
+          currentStory = story;
+          renderStory(p, story);
+          done.push("story");
+        }
+        if (photo) {
+          status.textContent = "Saving profile photo…";
+          const img = await toJpeg(photo, { square: true, max: 480, quality: 0.88 });
+          await putFile(`photos/${p.id}.jpg`, img.b64, `Update ${p.name}'s photo`);
+          p.photo = img.dataUrl; // show it right away, everywhere on the page
+          document.querySelectorAll(`[data-avatar="${p.id}"]`).forEach((a) => {
+            a.querySelector("img")?.remove();
+            const i = document.createElement("img");
+            i.alt = "";
+            i.src = img.dataUrl;
+            a.appendChild(i);
+          });
+          done.push("profile photo");
+        }
+        const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
+        for (let k = 0; k < extras.length; k++) {
+          status.textContent = `Adding photo ${k + 1} of ${extras.length}…`;
+          const img = await toJpeg(extras[k], { max: 1600 });
+          await putFile(`gallery/${p.id}/${stamp}-${k + 1}.jpg`, img.b64, `Add a photo of ${p.name}`);
+          addToGallery([img.dataUrl], true);
+        }
+        if (extras.length) done.push(extras.length === 1 ? "1 gallery photo" : `${extras.length} gallery photos`);
+        slot.innerHTML = `<p class="ed-done">Saved the ${done.join(" and ").replace(/ and (?=.* and )/g, ", ")}. Everyone will see it on the live site in about a minute.</p>`;
+      } catch (err) {
+        if (err.status === 401) setToken("");
+        status.textContent = (done.length ? `Saved ${done.join(", ")}, but the rest failed. ` : "") + saveError(err);
+        saveBtn.disabled = false;
+      }
+    });
+  }
+
+  // ---------- Photo gallery ----------
+  function addToGallery(urls, prepend) {
+    const wrap = drawer.querySelector(".gallery-wrap");
+    if (!wrap || !urls.length) return;
+    const grid = wrap.querySelector(".gallery");
+    const html = urls.map((u) => `<button type="button" class="thumb" data-full="${esc(u)}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join("");
+    grid.insertAdjacentHTML(prepend ? "afterbegin" : "beforeend", html);
+    wrap.hidden = false;
+  }
+
+  async function loadGallery(p) {
+    if (!gh.repo) return;
+    let urls = [];
+    try {
+      const res = await ghFetch(`contents/gallery/${p.id}?ref=${BRANCH}`);
+      if (res.ok) {
+        urls = (await res.json())
+          .filter((f) => f.type === "file" && /\.(jpe?g|png|webp|gif)$/i.test(f.name))
+          .sort((a, b) => b.name.localeCompare(a.name)) // newest first
+          .map((f) => f.download_url);
+      }
+    } catch (_) {}
+    if (openId !== p.id) return;
+    addToGallery(urls, false);
+  }
+
+  const lightbox = document.createElement("div");
+  lightbox.className = "lightbox";
+  lightbox.hidden = true;
+  lightbox.innerHTML = `<img alt=""><button type="button" class="close">Close</button>`;
+  document.body.appendChild(lightbox);
+  lightbox.addEventListener("click", () => (lightbox.hidden = true));
 
   function openPlayer(id) {
     const p = byId.get(id);
@@ -382,16 +592,21 @@
     openId = id;
     const mentor = p.mentor && byId.get(p.mentor);
     const mentees = menteesOf(p.id);
-    const batchmates = players.filter((o) => o.year === p.year && o.id !== p.id);
+    const batchmates = p.coach ? [] : players.filter((o) => o.year === p.year && o.id !== p.id);
     const wins = resultsOf(p.id).sort((a, b) => (b.ev.year || 0) - (a.ev.year || 0));
 
+    currentStory = null;
     drawer.innerHTML = `
-      <button class="close" type="button" data-close>Close</button>
+      <div class="drawer-actions">
+        ${gh.repo ? `<button class="edit-btn" type="button" data-edit>Edit</button>` : ""}
+        <button class="close" type="button" data-close>Close</button>
+      </div>
       ${avatar(p, true)}
       <h3 id="drawer-title">${esc(p.name)}</h3>
       ${p.nicknames.length ? `<p class="nick">aka ${p.nicknames.map((n) => `“${esc(n)}”`).join(", ")}</p>` : ""}
+      <div class="editor-slot"></div>
       <dl>
-        <dt>Joined IITB</dt><dd>${p.year || "Not known yet"}</dd>
+        ${p.coach ? "" : `<dt>Joined IITB</dt><dd>${p.year || "Not known yet"}</dd>`}
         ${p.program ? `<dt>Program</dt><dd>${esc(p.program)}</dd>` : ""}
         ${p.hostel ? `<dt>Hostel</dt><dd>${esc(p.hostel)}</dd>` : ""}
         ${p.roles.length ? `<dt>Roles</dt><dd>${p.roles.map(esc).join("<br>")}</dd>` : ""}
@@ -421,6 +636,7 @@
       }
       <h4>Story</h4>
       <div class="story"><p class="hint">Loading…</p></div>
+      <div class="gallery-wrap" hidden><h4>Photos</h4><div class="gallery"></div></div>
       ${mentor ? `<h4>Brought in by</h4>${personChips([mentor])}` : ""}
       ${mentees.length ? `<h4>Passed the racquet to</h4>${personChips(mentees)}` : ""}
       ${batchmates.length ? `<h4>${p.year ? "Batchmates" : "Also waiting for a year"}</h4>${personChips(batchmates)}` : ""}
@@ -431,6 +647,7 @@
     drawer.querySelector("[data-close]").focus();
     try { history.replaceState(null, "", "#" + p.id); } catch (_) {}
     loadStory(p);
+    loadGallery(p);
   }
 
   function closeDrawer() {
@@ -444,11 +661,22 @@
 
   drawer.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) return closeDrawer();
+    if (e.target.closest("[data-edit]")) return openEditor(byId.get(openId));
+    const thumb = e.target.closest(".thumb");
+    if (thumb) {
+      lightbox.querySelector("img").src = thumb.dataset.full;
+      lightbox.hidden = false;
+      return;
+    }
     const btn = e.target.closest("[data-open]");
     if (btn) openPlayer(btn.dataset.open);
   });
   scrim.addEventListener("click", closeDrawer);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!lightbox.hidden) lightbox.hidden = true;
+    else closeDrawer();
+  });
   // Any [data-open] button outside the drawer (trophies, Inter IIT) opens that card.
   document.body.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-open]");
@@ -606,11 +834,11 @@
     }
     el.innerHTML = `<div class="family-grid">${fam
       .map(
-        (f) => `<div class="family-card">${avatar(f)}
-          <div><strong>${esc(f.name)}</strong>
-            <div class="role">${esc([f.role, f.years].filter(Boolean).join(" · "))}</div>
-            ${f.note ? `<p>${esc(f.note)}</p>` : ""}
-          </div></div>`
+        (f) => `<button type="button" class="family-card" data-open="${esc(f.id || slug(f.name))}">${avatar(f)}
+          <span><strong>${esc(f.name)}</strong>
+            <span class="role">${esc([f.role, f.years].filter(Boolean).join(" · "))}</span>
+            ${f.note ? `<span class="fnote">${esc(f.note)}</span>` : ""}
+          </span></button>`
       )
       .join("")}</div>`;
   }

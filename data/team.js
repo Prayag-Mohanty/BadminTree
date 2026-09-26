@@ -77,6 +77,7 @@ window.TEAM_DATA = {
       { name: "Gopal Verma" },
       { name: "Suryakant Priyadarshan", nicknames: ["Suryasth"], interIIT: [{ year: 2025 }] },
       { name: "Bipin Dehariya" },
+      { name: "Aashna Pullareddy", nicknames: ["Day Dreamer"], interIIT: [{ year: 2024 }] },
     ],
     2023: [
       { name: "Shlok Agarwal", nicknames: ["RR (Raftaar Returns)", "Raftaar"], interIIT: [{ year: 2024 }, { year: 2023 }] },

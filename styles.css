@@ -778,3 +778,4 @@ button.family-card:hover { border-color: var(--gold); }
 .family-card .role, .family-card .fnote { display: block; }
 .family-card .fnote { margin-top: 4px; font-size: 13px; color: var(--muted); }
 .meet header:last-child { margin-bottom: 0; }
+.story .lore-more { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--glass-edge); font-size: 13.5px; }

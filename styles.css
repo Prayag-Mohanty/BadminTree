@@ -129,8 +129,6 @@ code {
   margin: 0;
   text-wrap: balance;
 }
-.hero h1 .r { color: var(--red); }
-.hero h1 .b { color: var(--blue); }
 .hero .lede { max-width: 56ch; font-size: 17px; color: var(--muted); margin: 16px 0 0; }
 .stats {
   display: flex;
@@ -562,19 +560,20 @@ main .section { padding-block: 36px 24px; }
   -webkit-mask: var(--src) center / contain no-repeat;
   mask: var(--src) center / contain no-repeat;
 }
-.logo-institute { --src: url("assets/iitb-institute.svg"); height: 46px; aspect-ratio: 849 / 827; background-color: var(--blue); }
 .logo-panther { --src: url("assets/iitb-panther.svg"); height: 42px; aspect-ratio: 119 / 114; }
 .logo-sports { --src: url("assets/iitb-sports.svg"); height: 44px; aspect-ratio: 115 / 126; background-color: var(--red); }
-.logo-club { --src: url("assets/badminton-club.svg"); height: clamp(62px, 16vw, 150px); aspect-ratio: 283 / 317; background-color: var(--gold); }
+.logo-club { --src: url("assets/badminton-club.svg"); height: 64px; aspect-ratio: 283 / 317; background-color: var(--gold); }
 .org-logos .sep { width: 1px; height: 34px; background: var(--line); }
-.brand { display: flex; align-items: center; gap: clamp(14px, 3vw, 28px); margin-top: 26px; }
-.brand h1 { font-size: clamp(38px, 11vw, 132px); min-width: 0; }
+.hero h1 { font-size: clamp(56px, 13vw, 140px); color: var(--ink); margin-top: 22px; }
+.hero-right { display: flex; align-items: center; gap: 16px; }
 .hero { padding-block: 28px 30px; }
 footer .stats { margin: 0 0 10px; }
 footer p { margin: 0; }
 @media (max-width: 520px) {
   .org-logos { gap: 12px; }
-  .logo-institute, .logo-panther, .logo-sports { height: 34px; }
+  .logo-panther, .logo-sports { height: 34px; }
+  .logo-club { height: 48px; }
+  .hero-right { gap: 10px; }
 }
 
 /* ---------- Trophy cabinet ---------- */
@@ -659,4 +658,33 @@ footer p { margin: 0; }
 @media (max-width: 560px) {
   .podium li { grid-template-columns: 1fr; }
   .s-badge { margin-left: 0; }
+}
+
+/* ---------- Club leadership ---------- */
+.leadership { padding-block: 40px 0; }
+.terms { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.term {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+}
+.term.now { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--glass-shadow); }
+.term-year { font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
+.term-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: center; }
+.term-role { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.term-people { display: flex; flex-wrap: wrap; gap: 6px; }
+.squad-chip.plain { padding-left: 14px; cursor: default; }
+@media (max-width: 560px) {
+  .tab { font-size: 16px; padding-inline: 6px; }
+  .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: -20px; padding-inline: 20px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; }
+  .tree-tools { gap: 8px; }
+  .search { flex-basis: 100%; }
 }

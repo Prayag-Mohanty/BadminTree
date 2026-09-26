@@ -8,7 +8,7 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 Three tabs:
 
-- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). The coaches are listed below the tree.
+- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). Club leadership (secretary and convenors by year) and the coaches are listed below the tree.
 - **Inter IIT**: each Inter IIT Sports Meet with its host, result and squad.
 - **Trophy Cabinet**: one dropdown per tournament, split into inter-college and on-campus. Year buttons switch between editions; each category shows its podium on one line. Record placings only (1, 2, 3, 4), not scorelines.
 
@@ -32,6 +32,7 @@ Everything lives in [`data/team.js`](data/team.js); the field list is at the top
 - **New batch**: add a year under `batches`, e.g. `2027: [{ name: "New Fresher" }]`.
 - **Inter IIT**: add the meet to `interIITMeets` (`{ year, host, result }`) and `{ year, position }` to each player who played.
 - **Results**: add a tournament to `events`, with one line per result. Name people by id (or by plain name if they're not on the tree); team results can list a captain/manager (`role` + `who`) and `members`.
+- **Leadership**: add each year to `leadership` (secretary + convenors); the roles show on each person's card automatically.
 - **Short names**: the tree shows first names; set `shortName` if someone goes by something else.
 - **Year unknown**: people in `yearUnknown` sit at the roots under a "?" until you move them into a batch.
 

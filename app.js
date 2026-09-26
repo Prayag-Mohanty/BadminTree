@@ -33,6 +33,15 @@
   };
   for (const year of years) (DATA.batches[year] || []).forEach((raw) => addPlayer(raw, year));
   (DATA.yearUnknown || []).forEach((raw) => addPlayer(raw, null));
+
+  // Secretary / convenor terms become roles on each person's card, newest first.
+  const leadership = [...(DATA.leadership || [])].sort((a, b) => String(b.year).localeCompare(String(a.year)));
+  const leadRoles = new Map();
+  leadership.forEach((l) => {
+    (l.secretary || []).forEach((id) => leadRoles.set(id, [...(leadRoles.get(id) || []), `Institute Badminton Secretary ${l.year}`]));
+    (l.convenors || []).forEach((id) => leadRoles.set(id, [...(leadRoles.get(id) || []), `Badminton Convenor ${l.year}`]));
+  });
+  players.forEach((p) => (p.roles = [...(leadRoles.get(p.id) || []), ...p.roles]));
   const batchKeys = [...years, ...((DATA.yearUnknown || []).length ? [null] : [])];
 
   const meets = [...(DATA.interIITMeets || [])].sort((a, b) => b.year - a.year);
@@ -441,9 +450,9 @@
   scrim.addEventListener("click", closeDrawer);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
   // Any [data-open] button outside the drawer (trophies, Inter IIT) opens that card.
-  document.querySelector("main").addEventListener("click", (e) => {
+  document.body.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-open]");
-    if (btn && !drawer.contains(btn)) openPlayer(btn.dataset.open);
+    if (btn && !drawer.contains(btn) && !tree.contains(btn)) openPlayer(btn.dataset.open);
   });
 
   const person = (ref) => {
@@ -461,7 +470,7 @@
       .map((m) => {
         const squadList = players.filter((p) => p.interIIT.some((t) => t.year === m.year));
         return `<article class="meet">
-          <header><span class="meet-year">${esc(m.year)}</span><span class="meet-host">${esc(m.host || "")}</span>${m.result ? `<span class="meet-result">${esc(m.result)}</span>` : ""}</header>
+          <header><span class="meet-year">${esc(m.year)}</span><span class="meet-host">${esc([m.host, m.edition ? m.edition + " Inter IIT Sports Meet" : ""].filter(Boolean).join(" · "))}</span>${m.result ? `<span class="meet-result">${esc(m.result)}</span>` : ""}</header>
           ${squadList.length ? "" : `<p class="hint">Squad not added yet. Add <code>{ year: ${esc(m.year)} }</code> to each player's <code>interIIT</code>.</p>`}
           <div class="meet-squad">${squadList
             .map((p) => {
@@ -563,6 +572,30 @@
     });
   }
 
+  // ---------- Club leadership ----------
+  function renderLeadership() {
+    const el = document.getElementById("leadership");
+    if (!leadership.length) {
+      el.closest("section").hidden = true;
+      return;
+    }
+    const chip = (id) => {
+      const p = byId.get(id);
+      return p
+        ? `<button type="button" class="squad-chip" data-open="${p.id}">${avatar(p)}<span>${esc(p.name)}</span></button>`
+        : `<span class="squad-chip plain">${esc(id)}</span>`;
+    };
+    el.innerHTML = `<ol class="terms">${leadership
+      .map(
+        (l, i) => `<li class="term${i === 0 ? " now" : ""}">
+          <span class="term-year">${esc(l.year)}</span>
+          <div class="term-row"><span class="term-role">Secretary</span><div class="term-people">${(l.secretary || []).map(chip).join("")}</div></div>
+          <div class="term-row"><span class="term-role">Convenors</span><div class="term-people">${(l.convenors || []).map(chip).join("")}</div></div>
+        </li>`
+      )
+      .join("")}</ol>`;
+  }
+
   // ---------- Extended family ----------
   function renderFamily() {
     const el = document.getElementById("family");
@@ -604,6 +637,7 @@
   systemDark.addEventListener?.("change", syncThemeBtn);
   syncThemeBtn();
 
+  renderLeadership();
   renderInterIIT();
   renderTrophies();
   renderFamily();

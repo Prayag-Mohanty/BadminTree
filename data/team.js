@@ -13,7 +13,8 @@
  *   nicknames   ["Baddy"] or several: ["Sugardaddy", "..."].
  *   program     e.g. "B.Tech, Mechanical", "M.Tech, CSE".
  *   hostel      e.g. "H2".
- *   roles       e.g. ["Captain 2025-26"].
+ *   roles       Extra roles, e.g. ["General Secretary, Sports 2024-25"].
+ *               Secretary and convenor roles come from `leadership` below.
  *   interIIT    Every Inter IIT Sports Meet they played, e.g.
  *               [{ year: 2025, position: "Women's team, 3rd" }]
  *               The host of each year is listed in `interIITMeets` below.
@@ -62,6 +63,7 @@ window.TEAM_DATA = {
       { name: "Tushar Meena" },
       { name: "Rishabh Meena" },
       { name: "Aditi Nimbolkar" },
+      { name: "Yash Kashyap" },
     ],
     2024: [
       { name: "Prayag Mohanty", nicknames: ["Sugardaddy", "Mota Bhai"], interIIT: [{ year: 2025 }, { year: 2024 }] },
@@ -75,26 +77,30 @@ window.TEAM_DATA = {
     ],
     2023: [
       { name: "Shlok Agrawal", nicknames: ["RR (Raftaar Returns)", "Raftaar"], interIIT: [{ year: 2024 }, { year: 2023 }] },
-      { name: "Ekam Noor Singh", nicknames: ["Sarso Ka Smash", "AxelSingh"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Ekam Noor Singh", nicknames: ["Sarso Ka Smash", "AxelSingh"], interIIT: [{ year: 2025, position: "Men's team captain" }, { year: 2024 }] },
       { name: "Sai Charan", nicknames: ["Gyaan Doo?", "Aashiq", "Baaya"], interIIT: [{ year: 2025 }, { year: 2024 }, { year: 2023 }] },
       { name: "Prakhar Jain", nicknames: ["Absentee", "Baadalo Ka Raja"], interIIT: [{ year: 2025 }, { year: 2023 }] },
       { name: "Kalp Rawat" },
       { name: "Yajat Sharma", nicknames: ["Spiderman"], interIIT: [{ year: 2025 }] },
-      { name: "Aadish Vohra", nicknames: ["Court Sick"], interIIT: [{ year: 2024 }] },
+      { name: "Aadish Vohra", nicknames: ["Court Sick"], interIIT: [{ year: 2024, position: "Men's team captain" }] },
       { name: "Arshit Singh" },
       { name: "Arjun Kabra" },
     ],
     2022: [
       { name: "Prayash Sahu", nicknames: ["Goldman", "Gambhir"], interIIT: [{ year: 2025 }, { year: 2024 }] },
-      { name: "Bhavya Mittal", nicknames: ["Bubbly"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
-      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid", "RG Queen", "Slow-Mo"], interIIT: [{ year: 2025 }, { year: 2023 }, { year: 2022 }] },
+      { name: "Bhavya Mittal", nicknames: ["Bubbly"], interIIT: [{ year: 2023 }] },
+      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid", "RG Queen", "Slow-Mo"], interIIT: [{ year: 2025, position: "Women's team captain" }, { year: 2023 }, { year: 2022 }] },
       { name: "Keshav Samdani" },
       { name: "Hemant Kabra" },
       { name: "Yaswanth Juluva" },
     ],
     2021: [
       { name: "Tanay Tayal" },
+      { name: "Siddharth Farkiya", roles: ["General Secretary, Sports 2024-25"] },
       { name: "Gopal Maheshwari", nicknames: ["Chotiwala", "Feku"], interIIT: [{ year: 2023 }, { year: 2022 }] },
+    ],
+    2020: [
+      { name: "Anuj Partani", nicknames: ["Secy"], interIIT: [{ year: 2022 }] },
     ],
   },
 
@@ -102,12 +108,11 @@ window.TEAM_DATA = {
   // under a "?" until you move them into the right batch above.
   yearUnknown: [
     { name: "Soumya Mandal", nicknames: ["LeaDR", "Non Veg Lover"], interIIT: [{ year: 2023 }, { year: 2022 }] },
-    { name: "Rupansh Parth", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023 }, { year: 2022, position: "Men's team captain" }] },
+    { name: "Rupansh Kaushik", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023 }, { year: 2022, position: "Men's team captain" }] },
     { name: "Lokesh Soni", nicknames: ["Loki"], interIIT: [{ year: 2023 }] },
     { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023 }] },
-    { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
+    { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023 }] },
     { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
-    { name: "Anuj Partani", nicknames: ["Secy"], interIIT: [{ year: 2022 }] },
     { name: "Gyan Bhushan", nicknames: ["Navy"], interIIT: [{ year: 2022 }] },
     { name: "Vaibhav Gupta", nicknames: ["Air Force"], interIIT: [{ year: 2022 }] },
     { name: "Sanika Langde", nicknames: ["Captain"], interIIT: [{ year: 2022, position: "Women's team captain" }] },
@@ -117,13 +122,9 @@ window.TEAM_DATA = {
 
   interIITMeets: [
     { year: 2025, host: "IIT Madras", result: "Lost in the quarterfinals" },
-    {
-      year: 2024,
-      host: "", // add the host
-      result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions.",
-    },
-    { year: 2023, host: "", result: "Women's team: Silver" },
-    { year: 2022, host: "", result: "" },
+    { year: 2024, host: "IIT Indore", result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions." },
+    { year: 2023, edition: "56th", host: "IIT Bombay", result: "Women's team: Silver" },
+    { year: 2022, edition: "55th", host: "IIT Delhi", result: "Men's and women's teams: lost in the group stage" },
   ],
 
   events: [
@@ -286,7 +287,14 @@ window.TEAM_DATA = {
       name: "Inter IIT Sports Meet",
       scope: "inter-college",
       year: 2023,
-      results: [{ category: "Women's Team", place: 2, label: "Silver", members: ["bhavya-mittal", "tejal-sharan"] }],
+      results: [
+        {
+          category: "Women's Team",
+          place: 2,
+          label: "Silver",
+          members: ["bhavya-mittal", "tejal-sharan", "aanya-verma", "sharvanee-sonawane", "sara-ahire"],
+        },
+      ],
     },
     {
       name: "Institute Doubles Open",
@@ -311,6 +319,16 @@ window.TEAM_DATA = {
         { category: "Women's Singles", place: 3, who: "Aastha Singh Chouhan" },
       ],
     },
+  ],
+
+  // Institute Badminton Secretary (3rd year) and Convenors (2nd year).
+  // These also appear as roles on each person's card.
+  leadership: [
+    { year: "2026-27", secretary: ["radhika-bansal"], convenors: ["rishabh-meena", "yash-kashyap"] },
+    { year: "2025-26", secretary: ["sai-charan"], convenors: ["radhika-bansal", "gopal-verma"] },
+    { year: "2024-25", secretary: ["prayash-sahu"], convenors: ["arjun-kabra", "shlok-agrawal"] },
+    { year: "2023-24", secretary: ["siddharth-farkiya"], convenors: ["prayash-sahu", "hemant-kabra"] },
+    { year: "2022-23", secretary: ["anuj-partani"], convenors: ["siddharth-farkiya", "tanay-tayal"] },
   ],
 
   // Coaches, shown under the tree.

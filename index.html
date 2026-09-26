@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>IITB Badminton Tree</title>
+<title>BadminTree</title>
 <meta name="description" content="Every player of the IIT Bombay Badminton team, batch by batch.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,50 +13,72 @@
 <body>
 <!--BODY-->
 <header class="hero wrap">
-  <p class="eyebrow">IIT Bombay · Badminton</p>
-  <h1>The <span>Team</span> Tree</h1>
-  <p class="lede">Every player who has worn the jersey, batch by batch, from the roots up to this year's freshers. Tap a name to meet them.</p>
-  <div class="stats" id="stats"></div>
+  <div class="hero-top">
+    <div class="org-logos">
+      <span class="logo logo-panther" role="img" aria-label="IIT Bombay"></span>
+      <span class="sep" aria-hidden="true"></span>
+      <span class="logo logo-sports" role="img" aria-label="IITB Sports"></span>
+      <span class="sep" aria-hidden="true"></span>
+      <span class="logo logo-club" role="img" aria-label="Badminton Club IIT Bombay"></span>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button">Dark mode</button>
+  </div>
+  <h1>BadminTree</h1>
 </header>
 
 <div class="controls">
   <div class="wrap">
-    <input id="search" class="search" type="search" aria-label="Search players" placeholder="Search a name, nickname or year" autocomplete="off">
-    <div class="chips" role="group" aria-label="Filter by status">
-      <button class="chip" type="button" data-status="all" aria-pressed="true">Everyone</button>
-      <button class="chip" type="button" data-status="current" aria-pressed="false">Current squad</button>
-      <button class="chip" type="button" data-status="alumni" aria-pressed="false">Alumni</button>
-    </div>
-    <nav class="nav-links" aria-label="Sections">
-      <a href="#trophy-cabinet">Trophies</a>
-      <a href="#extended-family">Family</a>
+    <nav class="tabs" role="tablist" aria-label="Pages">
+      <button class="tab" type="button" role="tab" data-tab="tree">Team Tree</button>
+      <button class="tab" type="button" role="tab" data-tab="inter-iit">Inter IIT</button>
+      <button class="tab" type="button" role="tab" data-tab="trophies">Trophy Cabinet</button>
     </nav>
+    <div class="tree-tools" id="tree-tools">
+      <input id="search" class="search" type="search" aria-label="Search players" placeholder="Search a name or year" autocomplete="off">
+      <div class="chips" id="chips" role="group" aria-label="Show"></div>
+    </div>
   </div>
 </div>
 
-<main class="wrap">
-  <section class="section" aria-labelledby="tree-h">
+<div data-panel="tree" role="tabpanel">
+<div class="tree-band">
+  <section class="section wrap" aria-labelledby="tree-h">
     <h2 id="tree-h">The Tree</h2>
-    <p class="sub">Each ring on the trunk is the year a batch joined the team. Hover a player to light up who brought them in and who they brought in.</p>
+    <p class="sub">Each knot on the trunk is the year a batch joined IIT Bombay, newest at the top. A gold ring marks an Inter IIT player. Tap anyone for their full name and story.</p>
     <div class="tree" id="tree"></div>
   </section>
+</div>
 
-  <section class="section" id="trophy-cabinet" aria-labelledby="trophy-h">
-    <h2 id="trophy-h">Trophy Cabinet</h2>
-    <p class="sub">Team and individual results, newest first.</p>
-    <div id="trophies"></div>
+<section class="section wrap leadership" aria-labelledby="lead-h">
+  <h2 id="lead-h">Club Leadership</h2>
+  <p class="sub">Institute Badminton Secretary (3rd year) and Convenors (2nd year).</p>
+  <div id="leadership"></div>
+</section>
+
+<section class="section wrap coaches" aria-labelledby="coaches-h">
+  <h2 id="coaches-h">Coaches</h2>
+  <div id="family"></div>
+</section>
+</div>
+
+<main class="wrap">
+  <section class="section" data-panel="inter-iit" role="tabpanel" aria-labelledby="iit-h" hidden>
+    <h2 id="iit-h">Inter IIT</h2>
+    <p class="sub">Who represented IIT Bombay at each Inter IIT Sports Meet.</p>
+    <div id="iit-list"></div>
   </section>
 
-  <section class="section" id="extended-family" aria-labelledby="family-h">
-    <h2 id="family-h">Extended Family</h2>
-    <p class="sub">Not always on the roster, always part of the story.</p>
-    <div id="family"></div>
+  <section class="section" data-panel="trophies" role="tabpanel" aria-labelledby="trophy-h" hidden>
+    <h2 id="trophy-h">Trophy Cabinet</h2>
+    <p class="sub">Tournaments, leagues and awards, newest first.</p>
+    <div id="trophy-list"></div>
   </section>
 </main>
 
 <footer class="wrap">
-  Follow the club on Instagram: <a href="https://www.instagram.com/badmintonclub_iitbombay/" target="_blank" rel="noopener">@badmintonclub_iitbombay</a>.
-  Missing someone or got a detail wrong? Edit <code>data/team.js</code>.
+  <div class="stats" id="stats"></div>
+  <p>Follow the club on Instagram: <a href="https://www.instagram.com/badmintonclub_iitbombay/" target="_blank" rel="noopener">@badmintonclub_iitbombay</a>.
+  Missing someone or got a detail wrong? Edit <code>data/team.js</code>.</p>
 </footer>
 
 <div class="scrim" id="scrim" hidden></div>

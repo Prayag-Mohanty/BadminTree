@@ -4,7 +4,7 @@ The tree of the IIT Bombay Badminton team: every player batch by batch, with the
 
 Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
-**Live site:** https://prayag-mohanty.github.io/BadminTree/ (once GitHub Pages is switched on, see below)
+**Live site:** https://badmin-tree.vercel.app/ (also mirrored at https://prayag-mohanty.github.io/BadminTree/)
 
 ## What's on the site
 
@@ -73,7 +73,7 @@ Saving goes through a small function, [`api/save.js`](api/save.js), which runs o
    - `EDIT_PASSCODE`: optional. If set, editors enter this passcode once per device (share it in the team group). Leave it out to let anyone edit.
 4. Redeploy (Deployments → ⋯ → Redeploy) so the variables take effect.
 
-The Edit button appears on the Vercel site. To also show it on GitHub Pages, set `editApi` in `data/team.js` to `https://<your-vercel-domain>/api/save`.
+`editApi` in `data/team.js` points at `https://badmin-tree.vercel.app/api/save`, so the Edit button works on both the Vercel site and the GitHub Pages copy.
 
 What gets saved where:
 

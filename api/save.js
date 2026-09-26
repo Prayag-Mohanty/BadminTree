@@ -15,7 +15,7 @@ const crypto = require("crypto");
 
 const REPO = process.env.GITHUB_REPO || "Prayag-Mohanty/BadminTree";
 const BRANCH = process.env.GITHUB_BRANCH || "main";
-const ALLOWED_ORIGINS = ["https://prayag-mohanty.github.io"];
+const ALLOWED_ORIGINS = ["https://badmin-tree.vercel.app", "https://prayag-mohanty.github.io"];
 
 const LIMITS = {
   story: 20000, // characters

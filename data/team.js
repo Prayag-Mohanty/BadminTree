@@ -128,6 +128,8 @@ window.TEAM_DATA = {
     { year: 2024, host: "IIT Indore", result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions." },
     { year: 2023, edition: "56th", host: "IIT Bombay", result: "Women's team: Silver" },
     { year: 2022, edition: "55th", host: "IIT Delhi", result: "Men's and women's teams: lost in the group stage" },
+    { year: 2019, host: "", result: "Women's team: Bronze" },
+    { year: 2017, host: "", result: "Women's team: Bronze" },
   ],
 
   events: [
@@ -229,6 +231,18 @@ window.TEAM_DATA = {
         },
         { category: "Overall Sports Championship", place: 1, who: "IIT Bombay", overall: true },
       ],
+    },
+    {
+      name: "Inter IIT Sports Meet",
+      scope: "inter-college",
+      year: 2019,
+      results: [{ category: "Women's Team", place: 3, label: "Bronze" }],
+    },
+    {
+      name: "Inter IIT Sports Meet",
+      scope: "inter-college",
+      year: 2017,
+      results: [{ category: "Women's Team", place: 3, label: "Bronze" }],
     },
     {
       name: "Udghosh, IIT Kanpur",
@@ -337,7 +351,7 @@ window.TEAM_DATA = {
   // Coaches, shown under the tree.
   // { name: "…", role: "Coach", years: "2019-present", note: "…" }
   family: [
-    { name: "Shelendra Rasaniya", role: "Head coach · Men's coach" },
+    { name: "Shelendra Rasaniya", role: "Head coach · Men's coach · Sports Officer" },
     { name: "Namrata Ghole", role: "Women's coach" },
   ],
 };

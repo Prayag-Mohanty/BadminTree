@@ -1,6 +1,6 @@
 # BadminTree
 
-The family tree of the IIT Bombay Badminton team: every player batch by batch, with their nicknames, Inter IIT years, results and stories, plus the club's leadership, coaches and trophy cabinet.
+The tree of the IIT Bombay Badminton team: every player batch by batch, with their nicknames, Inter IIT years, results and stories, plus the club's leadership, coaches and trophy cabinet.
 
 Made so the next fresher who asks "who was that?" gets an answer in one tap.
 

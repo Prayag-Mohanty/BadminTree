@@ -46,10 +46,9 @@ window.TEAM_DATA = {
   instagram: "badmintonclub_iitbombay",
 
   // Where the site's "Write story" buttons point.
-  // editApi: where the Edit form saves. Leave empty on Vercel (it uses
-  // api/save on the same site); set it to "https://<vercel-domain>/api/save"
-  // to also enable editing on GitHub Pages.
-  github: { repo: "Prayag-Mohanty/BadminTree", branch: "main", editApi: "" },
+  // editApi: where the Edit form saves (the Vercel function), so editing
+  // works on both the Vercel site and the GitHub Pages copy.
+  github: { repo: "Prayag-Mohanty/BadminTree", branch: "main", editApi: "https://badmin-tree.vercel.app/api/save" },
 
   // Batches are keyed by the year the players joined IIT Bombay.
   batches: {

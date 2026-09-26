@@ -508,7 +508,7 @@
     const el = document.getElementById("family");
     const fam = DATA.family || [];
     if (!fam.length) {
-      el.innerHTML = `<div class="empty-state">Coaches, managers, the friends who kept score. Add them to <code>family</code> in <code>data/team.js</code>.</div>`;
+      el.innerHTML = `<div class="empty-state">Add coaches to <code>family</code> in <code>data/team.js</code>.</div>`;
       return;
     }
     el.innerHTML = `<div class="family-grid">${fam
@@ -549,8 +549,8 @@
   renderFamily();
 
   // ---------- Tabs ----------
-  // #tree, #inter-iit, #trophies, #family; a player id (#vidhi-kapuria) opens the tree with their card.
-  const TABS = ["tree", "inter-iit", "trophies", "family"];
+  // #tree, #inter-iit, #trophies; a player id (#vidhi-kapuria) opens the tree with their card.
+  const TABS = ["tree", "inter-iit", "trophies"];
   let treeShown = false;
   function showTab(name) {
     if (!TABS.includes(name)) name = "tree";

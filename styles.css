@@ -547,3 +547,8 @@ main .section { padding-block: 36px 24px; }
 .rrole { font-weight: 400; color: var(--muted); }
 .event .nm { font-weight: 400; }
 .event .nm .who-link { font-weight: 600; }
+.coaches { padding-block: 40px 16px; }
+.coaches .family-card { align-items: center; padding: 14px 16px; }
+.coaches .family-card .avatar { width: 56px; height: 56px; font-size: 22px; }
+.coaches .family-card strong { font-size: 16px; }
+.coaches .family-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }

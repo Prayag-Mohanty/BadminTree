@@ -300,7 +300,7 @@ window.TEAM_DATA = {
     },
   ],
 
-  // The extended family: coaches, managers, friends of the team.
+  // Coaches, shown under the tree.
   // { name: "…", role: "Coach", years: "2019-present", note: "…" }
   family: [
     { name: "Shelendra Rasaniya", role: "Head coach · Men's coach" },

@@ -28,7 +28,6 @@
       <button class="tab" type="button" role="tab" data-tab="tree">Team Tree</button>
       <button class="tab" type="button" role="tab" data-tab="inter-iit">Inter IIT</button>
       <button class="tab" type="button" role="tab" data-tab="trophies">Trophy Cabinet</button>
-      <button class="tab" type="button" role="tab" data-tab="family">Family</button>
     </nav>
     <div class="tree-tools" id="tree-tools">
       <input id="search" class="search" type="search" aria-label="Search players" placeholder="Search a name or year" autocomplete="off">
@@ -37,12 +36,20 @@
   </div>
 </div>
 
-<div class="tree-band" data-panel="tree" role="tabpanel">
+<div data-panel="tree" role="tabpanel">
+<div class="tree-band">
   <section class="section wrap" aria-labelledby="tree-h">
     <h2 id="tree-h">The Tree</h2>
     <p class="sub">Each knot on the trunk is the year a batch joined IIT Bombay, newest at the top. A gold ring marks an Inter IIT player. Tap anyone for their full name and story.</p>
     <div class="tree" id="tree"></div>
   </section>
+</div>
+
+<section class="section wrap coaches" aria-labelledby="coaches-h">
+  <h2 id="coaches-h">Coaches</h2>
+  <p class="sub">The people behind every drill, drop and smash.</p>
+  <div id="family"></div>
+</section>
 </div>
 
 <main class="wrap">
@@ -56,12 +63,6 @@
     <h2 id="trophy-h">Trophy Cabinet</h2>
     <p class="sub">Tournaments, leagues and awards, newest first.</p>
     <div id="trophies"></div>
-  </section>
-
-  <section class="section" data-panel="family" role="tabpanel" aria-labelledby="family-h" hidden>
-    <h2 id="family-h">Extended Family</h2>
-    <p class="sub">Not always on the roster, always part of the story.</p>
-    <div id="family"></div>
   </section>
 </main>
 

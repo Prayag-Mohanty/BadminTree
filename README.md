@@ -6,14 +6,13 @@ Made so the next fresher who asks "who was that?" gets an answer in one tap.
 
 ## What's on the page
 
-Four tabs:
+Three tabs:
 
-- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year).
+- **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). The coaches are listed below the tree.
 - **Inter IIT**: each Inter IIT Sports Meet with its host, result and squad.
 - **Trophy Cabinet**: every tournament, league and award, newest first, with team rosters.
-- **Family**: coaches and everyone else who was part of the story.
 
-Links: `…/#trophies`, `…/#inter-iit`, `…/#family` open a tab; `…/#vidhi-kapuria` opens that player's card. There's a light/dark toggle at the top.
+Links: `…/#trophies` and `…/#inter-iit` open a tab; `…/#vidhi-kapuria` opens that player's card. There's a light/dark toggle at the top.
 
 ## Editing the data
 

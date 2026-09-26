@@ -155,7 +155,7 @@ window.TEAM_DATA = {
       year: 2026,
       results: [
         { category: "Team Titans", place: 2, role: "Captain", who: "aarnav-girish", members: ["yajat-sharma", "rachel-singhal"] },
-        { category: "Team Gladiators", place: 3, role: "Captain", who: "gopal-verma", members: ["sai-charan", "Shelendra", "aditi-nimbolkar", "keshav-samdani"] },
+        { category: "Team Gladiators", place: 3, role: "Captain", who: "gopal-verma", members: ["sai-charan", "shelendra-rasaniya", "aditi-nimbolkar", "keshav-samdani"] },
         { category: "Team Vortex", members: ["bhavya-mittal", "prakhar-jain"] },
         { category: "Most Valuable Player (Men)", place: "award", who: "prakhar-jain" },
         { category: "Most Valuable Player (Women)", place: "award", who: "rachel-singhal" },

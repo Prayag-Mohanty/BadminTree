@@ -22,7 +22,8 @@ Links: `…/#inter-iit` and `…/#trophies` open a tab; `…/#vidhi-kapuria` ope
 | --- | --- |
 | `data/team.js` | All the content: players, Inter IIT meets, results, leadership, coaches |
 | `stories/<id>.md` | One story file per person |
-| `photos/<id>.jpg` | One photo per person (picked up automatically) |
+| `photos/<id>.jpg` | One profile photo per person (picked up automatically) |
+| `gallery/<id>/` | Extra photos of that person, shown on their card |
 | `assets/` | Logos as single-colour SVGs, recoloured by the theme |
 | `index.html`, `styles.css`, `app.js` | The site itself; no build step |
 
@@ -46,7 +47,7 @@ Everything lives in [`data/team.js`](data/team.js); the full field list is at th
 - **Inter IIT**: add the meet to `interIITMeets` (`{ year, host, result }`) and `{ year, position }` to each player who played.
 - **Results**: add a tournament to `events`, one line per result. Name people by id (or by plain name if they're not on the tree). Team results can list a captain or manager (`role` + `who`) and `members`; doubles pairs go in `who` as a list. Record placings only (1, 2, 3, 4), not scorelines. Mark events against other colleges with `scope: "inter-college"`.
 - **Leadership**: add each year to `leadership` (secretary and convenors). The roles show on each person's card automatically.
-- **Coaches**: add them to `family`.
+- **Coaches**: add them to `family`. They get cards (with Edit) but no place on the tree.
 - **Short names**: the tree shows first names; set `shortName` if someone goes by something else.
 
 ### Editing straight on GitHub (no setup)
@@ -57,21 +58,39 @@ Everything lives in [`data/team.js`](data/team.js); the full field list is at th
 
 Keep the commas and quotes intact: each field is `key: "value",` and each person is one `{ ... },`.
 
+## Editing from the site
+
+Every card (players and coaches) has an **Edit** button. From there you can rewrite the story, replace the profile photo, and add photos to the person's gallery. **Save** writes the changes straight to this repo, and the live site updates for everyone in about a minute.
+
+Saving needs a GitHub access token, set up once per browser:
+
+1. You need write access to this repo. The owner adds teammates under **Settings → Collaborators → Add people**.
+2. [Create a fine-grained token](https://github.com/settings/personal-access-tokens/new) named `BadminTree`.
+3. Under **Repository access**, choose **Only select repositories → BadminTree**.
+4. Under **Repository permissions**, set **Contents** to **Read and write**. Generate it and copy it.
+5. Paste it the first time you press Edit. It stays in that browser only; **Forget my token** removes it.
+
+What gets saved where:
+
+| Change | File |
+| --- | --- |
+| Story | `stories/<id>.md` |
+| Profile photo (cropped square, 480 px) | `photos/<id>.jpg` |
+| Gallery photos (up to 1600 px) | `gallery/<id>/<timestamp>.jpg` |
+
 ## Stories
 
-Each person's story is a text file: `stories/<id>.md`. Blank lines start new paragraphs; `*italics*` and `**bold**` work. Several stories can live in one file (the site shows them in order), which is how the Know Your Team write-ups from different years stack up.
-
-The easiest way to add one: open someone's card on the live site and click **Write their story** (or **Edit story**). It opens that exact file in GitHub's editor; write it, click **Commit changes**, and it's live in about a minute.
+Each person's story is a text file: `stories/<id>.md`. Blank lines start new paragraphs; `*italics*` and `**bold**` work. Several stories can live in one file (the site shows them in order), which is how the Know Your Team write-ups from different years stack up. The easiest way to write one is the **Edit** button on their card.
 
 ## Adding photos
 
-Photos are picked up automatically by file name. No code change needed.
+The easiest way is the **Edit** button on the person's card. To add photos by hand instead:
 
 1. Crop the photo roughly square (a face shot works best; it's shown in a circle).
 2. Name it after the person's id, e.g. `vidhi-kapuria.jpg`. `.jpg`, `.jpeg`, `.png` and `.webp` all work.
 3. On GitHub, open the [`photos/`](photos) folder, click **Add file → Upload files**, drop the images in and commit.
 
-Anyone without a photo gets their initials. To use a different file name, set `photo: "photos/whatever.jpg"` on that person. Keep photos under ~300 KB so the page stays fast.
+Anyone without a photo gets their initials. Gallery photos go in `gallery/<id>/`. To use a different profile photo file name, set `photo: "photos/whatever.jpg"` on that person.
 
 ## Running it locally
 

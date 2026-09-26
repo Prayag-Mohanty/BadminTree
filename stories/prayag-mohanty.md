@@ -5,3 +5,5 @@ Meet Prayag: known for his sharp wit, strong smashes, and comic timing that keep
 The wittiest of the lot, Prayag is an M.Tech student who is literally the big bro of the team. He is a doubles specialist who's known to smash pretty hard. His funny banter during training keeps the team entertained.
 
 *From Know Your Team, Inter IIT Sports Meet 2024.*
+
+In IBL 2025, Prayag played made sure the 2 trump matches he played against, got -1 instead of +2. All in one day

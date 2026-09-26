@@ -37,18 +37,18 @@
 
   const meets = [...(DATA.interIITMeets || [])].sort((a, b) => b.year - a.year);
   const meetFor = (year) => meets.find((m) => m.year === year) || { year };
-  const PLACE = { 1: "Winner", 2: "Runner-up", 3: "Third", award: "Award" };
+  const PLACE = { 1: "Winner", 2: "Runner-up", 3: "Third", 4: "Fourth", award: "Award" };
   // Every result, with the player resolved where the name matches someone on the tree.
   const eventYear = (ev) => ev.yearLabel || ev.year || "";
   const results = (DATA.events || []).flatMap((ev) =>
     (ev.results || []).map((r) => ({
       ...r,
       ev,
-      player: byId.get(r.who) || null,
+      whoList: [].concat(r.who || []), // a name, or a pair for doubles / co-leads
       members: r.members || [],
     }))
   );
-  const resultsOf = (id) => results.filter((r) => (r.player && r.player.id === id) || r.members.includes(id));
+  const resultsOf = (id) => results.filter((r) => r.whoList.includes(id) || r.members.includes(id));
   const placeLabel = (r) => r.label || PLACE[r.place] || String(r.place || "");
   const menteesOf = (id) => players.filter((p) => p.mentor === id);
 
@@ -403,7 +403,7 @@
         wins.length
           ? `<h4>Results</h4><ul class="wins">${wins
               .map((r) => {
-                const part = r.player && r.player.id === p.id ? r.role : "";
+                const part = r.whoList.includes(p.id) ? r.role : "";
                 const what = [placeLabel(r), r.category].filter(Boolean).map(esc);
                 return `<li>${medal(r.place)}<span>${what.length > 1 ? `<b>${what[0]}</b>, ${what[1]}` : `<b>${what[0]}</b>`}${part ? ` <span class="ev">(${esc(part)})</span>` : ""}<br><span class="ev">${esc(r.ev.name)} ${esc(eventYear(r.ev))}</span></span></li>`;
               })
@@ -452,7 +452,7 @@
   };
   const resultPeople = (r) => {
     const bits = [];
-    if (r.who) bits.push(`${r.role ? `<span class="rrole">${esc(r.role)}</span> ` : ""}${person(r.who)}`);
+    if (r.whoList.length) bits.push(`${r.role ? `<span class="rrole">${esc(r.role)}</span> ` : ""}${r.whoList.map(person).join(" &amp; ")}`);
     if (r.members.length) bits.push(r.members.map(person).join(", "));
     if (r.note) bits.push(`<span class="rnote">${esc(r.note)}</span>`);
     return bits.length ? `<span class="nm">${bits.join("<br>")}</span>` : "";

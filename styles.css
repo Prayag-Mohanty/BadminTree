@@ -336,6 +336,7 @@ code {
 .medal.m1 { background: var(--gold); }
 .medal.m2 { background: var(--silver); }
 .medal.m3 { background: var(--bronze); }
+.medal.m4 { background: transparent; border: 2px solid var(--silver); }
 .medal.maward { background: var(--red); border-radius: 3px; transform: rotate(45deg) scale(0.85); }
 
 .events { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }

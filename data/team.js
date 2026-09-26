@@ -28,8 +28,10 @@
  * RESULTS go in `events`. People are named by id (links to their card) or
  * by plain name (for people not on the tree).
  *   category  What the result is for: "Men's Singles", "Team Titans"...
- *   place     1 = Winner, 2 = Runner-up, 3 = Third, "award" = special award.
- *   who       The winner, or the captain/manager of a team.
+ *   place     1 = Winner, 2 = Runner-up, 3 = Third, 4 = Fourth,
+ *             "award" = special award.
+ *   who       The winner, or the captain/manager of a team. Use a list for
+ *             doubles pairs or co-leads: ["sharvanee-sonawane", "sara-ahire"].
  *   role      e.g. "Captain", "Manager" (shown before `who`).
  *   members   Everyone else in the team, e.g. ["yajat-sharma", "Vinamra"].
  *   label     Overrides the place wording; `note` adds a short remark.
@@ -60,43 +62,50 @@ window.TEAM_DATA = {
       { name: "Aditi Nimbolkar" },
     ],
     2024: [
-      { name: "Prayag Mohanty", nicknames: ["Sugardaddy"], interIIT: [{ year: 2025 }] },
-      { name: "Aarnav Girish", nicknames: ["StillHomesick"], interIIT: [{ year: 2025 }] },
-      { name: "Radhika Bansal" },
-      { name: "Arya Patil", interIIT: [{ year: 2025 }] },
-      { name: "Garima Pradutt" },
+      { name: "Prayag Mohanty", nicknames: ["Sugardaddy", "Mota Bhai"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Aarnav Girish", nicknames: ["StillHomesick", "Mumma's Boy"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Radhika Bansal", nicknames: ["Chhoti Si"], interIIT: [{ year: 2024, position: "Women's team captain" }] },
+      { name: "Arya Patil", nicknames: ["Flawless (self-claimed)"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Garima Pradutt", nicknames: ["Geet"], interIIT: [{ year: 2024 }] },
       { name: "Gopal Verma" },
       { name: "Suryakant Priyadarshan", nicknames: ["Suryasth"], interIIT: [{ year: 2025 }] },
       { name: "Bipin Dehariya" },
     ],
     2023: [
-      { name: "Shlok Agrawal" },
-      { name: "Ekam Noor Singh", nicknames: ["Sarso Ka Smash"], interIIT: [{ year: 2025 }] },
-      { name: "Sai Charan", nicknames: ["Gyaan Doo?"], interIIT: [{ year: 2025 }] },
-      { name: "Prakhar Jain", nicknames: ["Absentee"], interIIT: [{ year: 2025 }] },
+      { name: "Shlok Agrawal", nicknames: ["RR (Raftaar Returns)", "Raftaar"], interIIT: [{ year: 2024 }, { year: 2023 }] },
+      { name: "Ekam Noor Singh", nicknames: ["Sarso Ka Smash", "AxelSingh"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Sai Charan", nicknames: ["Gyaan Doo?", "Aashiq", "Baaya"], interIIT: [{ year: 2025 }, { year: 2024 }, { year: 2023 }] },
+      { name: "Prakhar Jain", nicknames: ["Absentee", "Baadalo Ka Raja"], interIIT: [{ year: 2025 }, { year: 2023 }] },
       { name: "Kalp Rawat" },
       { name: "Yajat Sharma", nicknames: ["Spiderman"], interIIT: [{ year: 2025 }] },
-      { name: "Aadish Vohra" },
+      { name: "Aadish Vohra", nicknames: ["Court Sick"], interIIT: [{ year: 2024 }] },
       { name: "Arshit Singh" },
       { name: "Arjun Kabra" },
     ],
     2022: [
-      { name: "Prayash Sahu", nicknames: ["Goldman"], interIIT: [{ year: 2025 }] },
-      { name: "Bhavya Mittal" },
-      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid"], interIIT: [{ year: 2025 }] },
+      { name: "Prayash Sahu", nicknames: ["Goldman", "Gambhir"], interIIT: [{ year: 2025 }, { year: 2024 }] },
+      { name: "Bhavya Mittal", nicknames: ["Bubbly"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
+      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid", "RG Queen"], interIIT: [{ year: 2025 }, { year: 2023 }] },
       { name: "Keshav Samdani" },
       { name: "Hemant Kabra" },
       { name: "Yaswanth Juluva" },
     ],
     2021: [
       { name: "Tanay Tayal" },
-      { name: "Gopal" },
+      { name: "Gopal Maheshwari", nicknames: ["Chotiwala"], interIIT: [{ year: 2023 }] },
     ],
   },
 
   // Players whose joining year isn't known yet. They sit at the roots
   // under a "?" until you move them into the right batch above.
-  yearUnknown: [],
+  yearUnknown: [
+    { name: "Soumya Mandal", nicknames: ["LeaDR"], interIIT: [{ year: 2023 }] },
+    { name: "Rupansh Parth", nicknames: ["Maverick"], interIIT: [{ year: 2023 }] },
+    { name: "Lokesh Soni", nicknames: ["Loki"], interIIT: [{ year: 2023 }] },
+    { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023 }] },
+    { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
+    { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
+  ],
 
   interIITMeets: [
     { year: 2025, host: "IIT Madras", result: "Lost in the quarterfinals" },
@@ -105,6 +114,7 @@ window.TEAM_DATA = {
       host: "", // add the host
       result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions.",
     },
+    { year: 2023, host: "", result: "Women's team: Silver" },
   ],
 
   events: [
@@ -179,7 +189,7 @@ window.TEAM_DATA = {
           place: 1,
           role: "Manager",
           who: "arshit-singh",
-          members: ["prayag-mohanty", "kalp-rawat", "tanay-tayal", "Tejal Sharan", "suryakant-priyadarshan", "keshav-samdani"],
+          members: ["prayag-mohanty", "kalp-rawat", "tanay-tayal", "tejal-sharan", "suryakant-priyadarshan", "keshav-samdani"],
         },
         { category: "Team Gladiators", place: 2, role: "Manager", who: "Vinamra", members: ["prayash-sahu", "Jathin Sai Ganesh"] },
         { category: "Team Vortex", place: 3, role: "Manager", who: "arjun-kabra", members: ["shlok-agrawal"] },
@@ -190,20 +200,103 @@ window.TEAM_DATA = {
     {
       name: "Spardha, IIT BHU",
       year: 2025,
-      results: [{ category: "Men's Team", place: 3 }],
+      results: [{ category: "Men's Team", place: 3, members: ["ekam-noor-singh", "sai-charan", "prakhar-jain", "aarnav-girish"] }],
     },
     {
       name: "Inter IIT Sports Meet",
       year: 2024,
       results: [
-        { category: "Men's Team", place: 2, note: "Best finish in 12 years" },
+        {
+          category: "Men's Team",
+          place: 2,
+          note: "Best finish in 12 years",
+          members: ["aadish-vohra", "shlok-agrawal", "ekam-noor-singh", "prayash-sahu", "sai-charan", "prayag-mohanty", "aarnav-girish"],
+        },
         { category: "Overall Sports Championship", place: 1, who: "IIT Bombay" },
       ],
     },
     {
       name: "Udghosh, IIT Kanpur",
       year: 2024,
-      results: [{ category: "Men's Team", place: 3 }],
+      results: [{ category: "Men's Team", place: 3, members: ["ekam-noor-singh", "shlok-agrawal", "prakhar-jain", "sai-charan"] }],
+    },
+    {
+      name: "Institute Doubles Open",
+      year: 2025,
+      results: [
+        { category: "Men's Doubles", place: 1, who: ["ekam-noor-singh", "yajat-sharma"] },
+        { category: "Men's Doubles", place: 2, who: ["shlok-agrawal", "Vinay"] },
+        { category: "Men's Doubles", place: 3, who: ["Jathin Sai Ganesh", "Vishnu"] },
+        { category: "Women's Doubles", place: 1, who: ["bhavya-mittal", "tejal-sharan"] },
+        { category: "Women's Doubles", place: 2, who: ["Namrata", "Pallavi"] },
+        { category: "Women's Doubles", place: 3, who: ["Kasturi", "Geeta"] },
+        { category: "Mixed Doubles", place: 1, who: ["Namrata", "Gopal"] },
+        { category: "Mixed Doubles", place: 2, who: ["prayash-sahu", "Vidya"] },
+        { category: "Mixed Doubles", place: 3, who: ["prayag-mohanty", "Ritoo"] },
+      ],
+    },
+    {
+      name: "Hostel General Championship",
+      year: 2024.5,
+      yearLabel: "2024-25",
+      results: [
+        { category: "Men's · Hostel 6", place: 1, members: ["Rudraksh", "Jathin Sai Ganesh", "sai-charan", "prayash-sahu", "Vinamra"], note: "Beat Hostel 2 3-2 in the final" },
+        { category: "Men's · Hostel 2", place: 2, members: ["shlok-agrawal", "kalp-rawat", "keshav-samdani", "aadish-vohra", "Anurag"] },
+        { category: "Men's · Hostel 3", place: 3, members: ["ekam-noor-singh", "Tamil", "yajat-sharma", "Damodar"], note: "Beat Hostel 18 3-0 for third" },
+        { category: "Men's · Hostel 18", place: 4, members: ["suryakant-priyadarshan", "Raj", "lokesh-soni", "tanay-tayal"] },
+      ],
+    },
+    {
+      name: "Institute Badminton Open",
+      year: 2024,
+      results: [
+        { category: "Men's Singles", place: 1, who: "shlok-agrawal" },
+        { category: "Men's Singles", place: 2, who: "prakhar-jain" },
+        { category: "Men's Singles", place: 3, who: "aadish-vohra" },
+        { category: "Men's Singles", place: 4, who: "prayag-mohanty" },
+        { category: "Women's Singles", place: 1, who: "bhavadharini-v" },
+        { category: "Women's Singles", place: 2, who: "Tanuja Mishra" },
+        { category: "Women's Singles", place: 3, who: "Vidya Jadhav" },
+        { category: "Women's Singles", place: 4, who: "garima-pradutt" },
+      ],
+    },
+    {
+      name: "Institute Badminton League",
+      year: 2024,
+      results: [
+        { category: "Team Hunters", place: 1, role: "Manager", who: "Shardul Kher" },
+        { category: "Team Warriors", place: 2, role: "Manager", who: "tanay-tayal", members: ["aadish-vohra"] },
+        { category: "Team Smashers", place: 3, role: "Co-led by", who: ["Aditya Vema Reddy", "bhavya-mittal"] },
+        { category: "Player of the Tournament (Men)", place: "award", who: "lokesh-soni" },
+      ],
+    },
+    {
+      name: "Inter IIT Sports Meet",
+      year: 2023,
+      results: [{ category: "Women's Team", place: 2, label: "Silver", members: ["bhavya-mittal", "tejal-sharan"] }],
+    },
+    {
+      name: "Institute Doubles Open",
+      year: 2023,
+      results: [
+        { category: "Men's Doubles", place: 1, who: ["Rijil", "suryakant-priyadarshan"] },
+        { category: "Men's Doubles", place: 2, who: ["aadish-vohra", "Veer"] },
+        { category: "Men's Doubles", place: 3, who: ["keshav-samdani", "Aditya"] },
+        { category: "Women's Doubles", place: 1, who: ["sharvanee-sonawane", "sara-ahire"] },
+        { category: "Women's Doubles", place: 2, who: ["Sarbani", "Nikita"] },
+      ],
+    },
+    {
+      name: "Institute Badminton Open",
+      year: 2023,
+      results: [
+        { category: "Men's Singles", place: 1, who: "shlok-agrawal" },
+        { category: "Men's Singles", place: 2, who: "soumya-mandal" },
+        { category: "Men's Singles", place: 3, who: "lokesh-soni" },
+        { category: "Women's Singles", place: 1, who: "aanya-verma" },
+        { category: "Women's Singles", place: 2, who: "bhavya-mittal" },
+        { category: "Women's Singles", place: 3, who: "Aastha Singh Chouhan" },
+      ],
     },
   ],
 

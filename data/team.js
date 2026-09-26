@@ -64,6 +64,7 @@ window.TEAM_DATA = {
       { name: "Rishabh Meena" },
       { name: "Aditi Nimbolkar" },
       { name: "Yash Kashyap" },
+      { name: "Yash Arya" },
     ],
     2024: [
       { name: "Prayag Mohanty", nicknames: ["Sugardaddy", "Mota Bhai"], interIIT: [{ year: 2025 }, { year: 2024 }] },
@@ -124,8 +125,8 @@ window.TEAM_DATA = {
   ],
 
   interIITMeets: [
-    { year: 2025, host: "IIT Madras", result: "Lost in the quarterfinals" },
-    { year: 2024, host: "IIT Indore", result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions." },
+    { year: 2025, edition: "58th", host: "IIT Madras", result: "Lost in the quarterfinals" },
+    { year: 2024, edition: "57th", host: "IIT Indore", result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions." },
     { year: 2023, edition: "56th", host: "IIT Bombay", result: "Women's team: Silver" },
     { year: 2022, edition: "55th", host: "IIT Delhi", result: "Men's and women's teams: lost in the group stage" },
     { year: 2019, host: "", result: "Women's team: Bronze" },

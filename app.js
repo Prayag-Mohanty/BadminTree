@@ -362,7 +362,6 @@
       .join("");
 
   const gh = DATA.github || {};
-  const repoName = gh.repo ? gh.repo.split("/")[1] : "";
   let currentStory = null; // story text of the open card, as loaded
 
   function renderStory(p, text) {
@@ -371,7 +370,7 @@
     const first = esc(p.name.split(" ")[0]);
     box.innerHTML = text
       ? md(text)
-      : `<p class="hint">Nobody has written ${first}'s story yet.</p>${gh.repo ? `<button type="button" class="story-write" data-edit>Write ${first}'s story</button>` : ""}`;
+      : `<p class="hint">Nobody has written ${first}'s story yet.</p>${EDIT_API ? `<button type="button" class="story-write" data-edit>Write ${first}'s story</button>` : ""}`;
   }
 
   async function loadStory(p) {
@@ -386,40 +385,46 @@
   }
 
   // ---------- Editing on the site ----------
-  // Saves straight to the GitHub repo, using a fine-grained access token that
-  // stays in this browser. The live site redeploys about a minute later.
-  const API = "https://api.github.com";
+  // Edits go to a small save function (api/save.js, hosted on Vercel) that
+  // writes to the GitHub repo with its own token. Visitors need no account.
+  // On the Vercel site it's same-origin; elsewhere set `editApi` in data/team.js.
   const BRANCH = gh.branch || "main";
-  const TOKEN_KEY = "badmintree-github-token";
-  const getToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (_) { return ""; } };
-  const setToken = (t) => { try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch (_) {} };
-  const bytesB64 = (bytes) => {
-    let s = "";
-    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-    return btoa(s);
-  };
-  const textB64 = (t) => bytesB64(new TextEncoder().encode(t));
+  const onGithubPages = /\.github\.io$/.test(location.hostname);
+  const EDIT_API = gh.editApi || (onGithubPages || location.protocol === "file:" ? "" : "api/save");
+  const PASS_KEY = "badmintree-passcode";
+  const getPass = () => { try { return localStorage.getItem(PASS_KEY) || ""; } catch (_) { return ""; } };
+  const setPass = (t) => { try { t ? localStorage.setItem(PASS_KEY, t) : localStorage.removeItem(PASS_KEY); } catch (_) {} };
+  let needsPasscode = null; // unknown until the save function tells us
 
-  const ghFetch = (path, opts = {}) => {
-    const token = getToken();
-    return fetch(`${API}/repos/${gh.repo}/${path}`, {
-      ...opts,
-      headers: { Accept: "application/vnd.github+json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(opts.headers || {}) },
-    });
-  };
-
-  async function putFile(path, contentB64, message) {
-    let sha;
-    const cur = await ghFetch(`contents/${path}?ref=${BRANCH}`, { cache: "no-store" });
-    if (cur.ok) sha = (await cur.json()).sha;
-    else if (cur.status === 401) { const e = new Error("unauthorized"); e.status = 401; throw e; }
-    const res = await ghFetch(`contents/${path}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, content: contentB64, branch: BRANCH, ...(sha ? { sha } : {}) }),
-    });
-    if (!res.ok) { const e = new Error(`GitHub replied ${res.status}`); e.status = res.status; throw e; }
+  async function checkEditApi() {
+    if (!EDIT_API || needsPasscode !== null) return;
+    try {
+      const r = await fetch(EDIT_API, { cache: "no-store" });
+      if (r.ok) needsPasscode = !!(await r.json()).passcode;
+    } catch (_) {}
   }
+
+  async function saveToSite(payload) {
+    let res;
+    try {
+      res = await fetch(EDIT_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, passcode: getPass() }),
+      });
+    } catch (_) {
+      throw new Error("Couldn't reach the site. Check your connection and press Save again.");
+    }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const e = new Error(data.error || "The save didn't go through. Try again in a minute.");
+      e.passcode = !!data.passcode;
+      throw e;
+    }
+  }
+
+  // Public read-only GitHub API, used to list gallery photos.
+  const ghFetch = (path) => fetch(`https://api.github.com/repos/${gh.repo}/${path}`, { headers: { Accept: "application/vnd.github+json" } });
 
   // Reads an image file, optionally crops it square, shrinks it and re-encodes as JPEG.
   async function toJpeg(file, { square = false, max = 1600, quality = 0.84 } = {}) {
@@ -445,37 +450,19 @@
     }
   }
 
-  const saveError = (err) =>
-    err.status === 401
-      ? "GitHub didn't accept that token. Check it was copied in full, or create a new one."
-      : err.status === 403 || err.status === 404
-      ? `That token can't write to ${repoName}. Give it access to the ${repoName} repo with Contents set to "Read and write".`
-      : err.status === 409 || err.status === 422
-      ? "Someone else saved this at the same moment. Press Save again."
-      : err.message && !err.status
-      ? err.message
-      : "Couldn't reach GitHub. Check your connection and press Save again.";
-
-  function openEditor(p) {
+  async function openEditor(p) {
     const slot = drawer.querySelector(".editor-slot");
-    if (!slot || !gh.repo) return;
+    if (!slot || !EDIT_API) return;
+    await checkEditApi();
     const first = esc(p.name.split(" ")[0]);
-    const needsToken = !getToken();
+    const askPass = needsPasscode && !getPass();
     slot.innerHTML = `<form class="editor" novalidate>
       <h4>Edit ${first}'s profile</h4>
       ${
-        needsToken
-          ? `<div class="ed-token">
-              <p><b>One-time setup.</b> Saving writes to the ${esc(repoName)} repo on GitHub, so this browser needs a GitHub access token. You need to be a collaborator on the repo.</p>
-              <ol>
-                <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token</a> named <code>${esc(repoName)}</code>.</li>
-                <li>Under <b>Repository access</b>, choose <b>Only select repositories</b>, then <b>${esc(repoName)}</b>.</li>
-                <li>Under <b>Repository permissions</b>, set <b>Contents</b> to <b>Read and write</b>. Generate it and copy it.</li>
-              </ol>
-              <label class="ed-label" for="ed-token">Paste your token</label>
-              <input id="ed-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
-              <p class="ed-help">It stays in this browser and is only used to save to ${esc(repoName)}.</p>
-            </div>`
+        askPass
+          ? `<label class="ed-label" for="ed-pass">Team passcode</label>
+             <input id="ed-pass" type="password" autocomplete="off" spellcheck="false">
+             <p class="ed-help">Ask in the team group. You only need to enter it once on this device.</p>`
           : ""
       }
       <label class="ed-label" for="ed-photo">Profile photo</label>
@@ -489,23 +476,21 @@
       <div class="ed-actions">
         <button type="submit" class="ed-save">Save</button>
         <button type="button" class="ed-cancel">Cancel</button>
-        ${needsToken ? "" : `<button type="button" class="ed-forget">Forget my token</button>`}
       </div>
       <p class="ed-status" role="status"></p>
     </form>`;
     const form = slot.querySelector("form");
     form.scrollIntoView({ behavior: "smooth", block: "start" });
     form.querySelector(".ed-cancel").addEventListener("click", () => (slot.innerHTML = ""));
-    form.querySelector(".ed-forget")?.addEventListener("click", () => { setToken(""); openEditor(p); });
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const status = form.querySelector(".ed-status");
-      const tokenInput = form.querySelector("#ed-token");
-      if (tokenInput) {
-        const t = tokenInput.value.trim();
-        if (!t) { status.textContent = "Paste your GitHub token first (steps above)."; tokenInput.focus(); return; }
-        setToken(t);
+      const passInput = form.querySelector("#ed-pass");
+      if (passInput) {
+        const t = passInput.value.trim();
+        if (!t) { status.textContent = "Enter the team passcode first."; passInput.focus(); return; }
+        setPass(t);
       }
       const photo = form.querySelector("#ed-photo").files[0];
       const extras = [...form.querySelector("#ed-gallery").files];
@@ -519,7 +504,7 @@
       try {
         if (storyChanged) {
           status.textContent = "Saving story…";
-          await putFile(`stories/${p.id}.md`, textB64(story + "\n"), `Update ${p.name}'s story`);
+          await saveToSite({ id: p.id, kind: "story", content: story });
           currentStory = story;
           renderStory(p, story);
           done.push("story");
@@ -527,7 +512,7 @@
         if (photo) {
           status.textContent = "Saving profile photo…";
           const img = await toJpeg(photo, { square: true, max: 480, quality: 0.88 });
-          await putFile(`photos/${p.id}.jpg`, img.b64, `Update ${p.name}'s photo`);
+          await saveToSite({ id: p.id, kind: "photo", content: img.b64 });
           p.photo = img.dataUrl; // show it right away, everywhere on the page
           document.querySelectorAll(`[data-avatar="${p.id}"]`).forEach((a) => {
             a.querySelector("img")?.remove();
@@ -538,19 +523,19 @@
           });
           done.push("profile photo");
         }
-        const stamp = new Date().toISOString().replace(/\D/g, "").slice(0, 14);
         for (let k = 0; k < extras.length; k++) {
           status.textContent = `Adding photo ${k + 1} of ${extras.length}…`;
           const img = await toJpeg(extras[k], { max: 1600 });
-          await putFile(`gallery/${p.id}/${stamp}-${k + 1}.jpg`, img.b64, `Add a photo of ${p.name}`);
+          await saveToSite({ id: p.id, kind: "gallery", content: img.b64 });
           addToGallery([img.dataUrl], true);
         }
         if (extras.length) done.push(extras.length === 1 ? "1 gallery photo" : `${extras.length} gallery photos`);
         slot.innerHTML = `<p class="ed-done">Saved the ${done.join(" and ").replace(/ and (?=.* and )/g, ", ")}. Everyone will see it on the live site in about a minute.</p>`;
       } catch (err) {
-        if (err.status === 401) setToken("");
-        status.textContent = (done.length ? `Saved ${done.join(", ")}, but the rest failed. ` : "") + saveError(err);
+        if (err.passcode) { setPass(""); needsPasscode = true; }
+        status.textContent = (done.length ? `Saved the ${done.join(", ")}, but the rest failed. ` : "") + err.message;
         saveBtn.disabled = false;
+        if (err.passcode && !form.querySelector("#ed-pass")) openEditor(p);
       }
     });
   }
@@ -601,7 +586,7 @@
     currentStory = null;
     drawer.innerHTML = `
       <div class="drawer-actions">
-        ${gh.repo ? `<button class="edit-btn" type="button" data-edit>Edit</button>` : ""}
+        ${EDIT_API ? `<button class="edit-btn" type="button" data-edit>Edit</button>` : ""}
         <button class="close" type="button" data-close>Close</button>
       </div>
       ${avatar(p, true)}

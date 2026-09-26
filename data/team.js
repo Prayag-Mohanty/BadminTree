@@ -85,6 +85,8 @@ window.TEAM_DATA = {
       { name: "Aadish Vora", nicknames: ["Court Sick"], interIIT: [{ year: 2024, position: "Men's team captain" }] },
       { name: "Arshit Singh" },
       { name: "Arjun Kabra" },
+      { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023 }] },
+      { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
     ],
     2022: [
       { name: "Prayash Sahu", nicknames: ["Goldman", "Gambhir"], interIIT: [{ year: 2025 }, { year: 2024 }] },
@@ -98,27 +100,27 @@ window.TEAM_DATA = {
       { name: "Tanay Tayal" },
       { name: "Siddharth Farkiya", roles: ["General Secretary, Sports 2024-25"] },
       { name: "Gopal Maheshwari", nicknames: ["Chotiwala", "Feku"], interIIT: [{ year: 2023 }, { year: 2022 }] },
+      { name: "Soumya Mandal", nicknames: ["LeaDR", "Non Veg Lover"], interIIT: [{ year: 2023 }, { year: 2022 }] },
+      { name: "Sanika Langde", nicknames: ["Captain"], interIIT: [{ year: 2022, position: "Women's team captain" }] },
+      { name: "Shainal Jain", nicknames: ["Robot"], interIIT: [{ year: 2022 }] },
+      { name: "Srinithya", nicknames: ["Silencer"], interIIT: [{ year: 2022 }] },
     ],
     2020: [
       { name: "Anuj Partani", nicknames: ["Secy"], interIIT: [{ year: 2022 }] },
       { name: "Jathin Sai Ganesh" },
+      { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023, position: "Women's team captain" }] },
+    ],
+    2019: [
+      { name: "Lokesh Soni", nicknames: ["Loki"], interIIT: [{ year: 2023 }] },
     ],
   },
 
   // Players whose joining year isn't known yet. They sit at the roots
   // under a "?" until you move them into the right batch above.
   yearUnknown: [
-    { name: "Soumya Mandal", nicknames: ["LeaDR", "Non Veg Lover"], interIIT: [{ year: 2023 }, { year: 2022 }] },
     { name: "Rupansh Kaushik", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023 }, { year: 2022, position: "Men's team captain" }] },
-    { name: "Lokesh Soni", nicknames: ["Loki"], interIIT: [{ year: 2023 }] },
-    { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023 }] },
-    { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023 }] },
-    { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
     { name: "Gyan Bhushan", nicknames: ["Navy"], interIIT: [{ year: 2022 }] },
     { name: "Vaibhav Gupta", nicknames: ["Air Force"], interIIT: [{ year: 2022 }] },
-    { name: "Sanika Langde", nicknames: ["Captain"], interIIT: [{ year: 2022, position: "Women's team captain" }] },
-    { name: "Shainal Jain", nicknames: ["Robot"], interIIT: [{ year: 2022 }] },
-    { name: "Srinithya", nicknames: ["Silencer"], interIIT: [{ year: 2022 }] },
   ],
 
   interIITMeets: [

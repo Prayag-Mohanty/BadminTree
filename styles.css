@@ -674,7 +674,7 @@ footer p { margin: 0; }
 }
 .term.now { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), var(--glass-shadow); }
 .term-year { font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: 1; color: var(--red); font-variant-numeric: tabular-nums; }
-.term-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: center; }
+.term-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: baseline; }
 .term-role { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .term-people { display: flex; flex-wrap: wrap; gap: 6px; }
 .squad-chip.plain { padding-left: 14px; cursor: default; }

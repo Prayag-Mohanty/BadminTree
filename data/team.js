@@ -256,6 +256,12 @@ window.TEAM_DATA = {
       results: [{ category: "Men's Team", place: 3, members: ["ekam-noor-singh", "shlok-agarwal", "prakhar-jain", "sai-charan"] }],
     },
     {
+      name: "Udghosh, IIT Kanpur",
+      scope: "inter-college",
+      year: 2023,
+      results: [{ category: "Women's Team", place: 3, members: ["bhavya-mittal", "aanya-verma", "tejal-sharan"] }],
+    },
+    {
       name: "Institute Doubles Open",
       year: 2025,
       results: [

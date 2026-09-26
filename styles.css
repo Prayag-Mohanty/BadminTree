@@ -507,15 +507,39 @@ code { background: var(--glass); }
 .event .rnote, .meet .hint { color: var(--muted); font-weight: 400; }
 .meet .hint { margin: 0 0 8px; font-size: 14px; }
 
+/* Sun/moon slider: knob sits over the sun in light mode, slides to the moon in dark. */
 .theme-toggle {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
+  position: relative;
+  flex: none;
+  width: 64px;
+  height: 32px;
+  padding: 0 7px;
   border-radius: 999px;
-  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
   cursor: pointer;
 }
+.tt-icon { position: relative; z-index: 1; width: 18px; height: 18px; display: grid; place-items: center; transition: color 0.25s ease; }
+.tt-icon svg { width: 18px; height: 18px; }
+.tt-sun svg { fill: currentColor; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.tt-moon svg { fill: currentColor; }
+.tt-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.3s ease;
+}
+.theme-toggle[aria-checked="false"] .tt-sun { color: #1a1400; }
+.theme-toggle[aria-checked="true"] .tt-knob { transform: translateX(32px); background: var(--blue); }
+.theme-toggle[aria-checked="true"] .tt-moon { color: #fff; }
+@media (prefers-reduced-motion: reduce) { .tt-knob, .tt-icon { transition: none; } }
 .hero-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
 .hero-top .eyebrow { margin: 0; }
 .search { flex-basis: 200px; }

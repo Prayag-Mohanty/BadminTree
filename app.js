@@ -856,7 +856,9 @@
   const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
   const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : systemDark.matches);
   const syncThemeBtn = () => {
-    themeBtn.textContent = isDark() ? "Light mode" : "Dark mode";
+    const dark = isDark();
+    themeBtn.setAttribute("aria-checked", String(dark));
+    themeBtn.title = dark ? "Switch to light mode" : "Switch to dark mode";
   };
   try {
     const saved = localStorage.getItem("theme");

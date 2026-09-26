@@ -344,7 +344,7 @@ window.TEAM_DATA = {
     { year: "2026-27", secretary: ["radhika-bansal"], convenors: ["rishabh-meena", "yash-kashyap"] },
     { year: "2025-26", secretary: ["sai-charan"], convenors: ["radhika-bansal", "gopal-verma"] },
     { year: "2024-25", secretary: ["prayash-sahu"], convenors: ["arjun-kabra", "shlok-agarwal"] },
-    { year: "2023-24", secretary: ["siddharth-farkiya"], convenors: ["prayash-sahu", "hemant-kabra"] },
+    { year: "2023-24", secretary: ["siddharth-farkiya"], convenors: ["keshav-samdani", "hemant-kabra"] },
     { year: "2022-23", secretary: ["anuj-partani"], convenors: ["siddharth-farkiya", "tanay-tayal"] },
   ],
 

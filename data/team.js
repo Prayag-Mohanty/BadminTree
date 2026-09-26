@@ -36,7 +36,9 @@
  *   members   Everyone else in the team, e.g. ["yajat-sharma", "Vinamra"].
  *   label     Overrides the place wording; `note` adds a short remark.
  * An event's `year` is used for sorting; `yearLabel` (e.g. "2025-26")
- * changes what's displayed.
+ * changes what's displayed. Set `scope: "inter-college"` for events
+ * against other colleges; everything else is listed as on campus.
+ * Record only the placing (1, 2, 3...), not match scores.
  */
 window.TEAM_DATA = {
   club: "IIT Bombay Badminton",
@@ -85,26 +87,32 @@ window.TEAM_DATA = {
     2022: [
       { name: "Prayash Sahu", nicknames: ["Goldman", "Gambhir"], interIIT: [{ year: 2025 }, { year: 2024 }] },
       { name: "Bhavya Mittal", nicknames: ["Bubbly"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
-      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid", "RG Queen"], interIIT: [{ year: 2025 }, { year: 2023 }] },
+      { name: "Sharvanee Sonawane", nicknames: ["Limpy Kid", "RG Queen", "Slow-Mo"], interIIT: [{ year: 2025 }, { year: 2023 }, { year: 2022 }] },
       { name: "Keshav Samdani" },
       { name: "Hemant Kabra" },
       { name: "Yaswanth Juluva" },
     ],
     2021: [
       { name: "Tanay Tayal" },
-      { name: "Gopal Maheshwari", nicknames: ["Chotiwala"], interIIT: [{ year: 2023 }] },
+      { name: "Gopal Maheshwari", nicknames: ["Chotiwala", "Feku"], interIIT: [{ year: 2023 }, { year: 2022 }] },
     ],
   },
 
   // Players whose joining year isn't known yet. They sit at the roots
   // under a "?" until you move them into the right batch above.
   yearUnknown: [
-    { name: "Soumya Mandal", nicknames: ["LeaDR"], interIIT: [{ year: 2023 }] },
-    { name: "Rupansh Parth", nicknames: ["Maverick"], interIIT: [{ year: 2023 }] },
+    { name: "Soumya Mandal", nicknames: ["LeaDR", "Non Veg Lover"], interIIT: [{ year: 2023 }, { year: 2022 }] },
+    { name: "Rupansh Parth", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023 }, { year: 2022, position: "Men's team captain" }] },
     { name: "Lokesh Soni", nicknames: ["Loki"], interIIT: [{ year: 2023 }] },
     { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023 }] },
     { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023, position: "Women's team, Silver" }] },
     { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
+    { name: "Anuj Partani", nicknames: ["Secy"], interIIT: [{ year: 2022 }] },
+    { name: "Gyan Bhushan", nicknames: ["Navy"], interIIT: [{ year: 2022 }] },
+    { name: "Vaibhav Gupta", nicknames: ["Air Force"], interIIT: [{ year: 2022 }] },
+    { name: "Sanika Langde", nicknames: ["Captain"], interIIT: [{ year: 2022, position: "Women's team captain" }] },
+    { name: "Shainal Jain", nicknames: ["Robot"], interIIT: [{ year: 2022 }] },
+    { name: "Srinithya", nicknames: ["Silencer"], interIIT: [{ year: 2022 }] },
   ],
 
   interIITMeets: [
@@ -115,6 +123,7 @@ window.TEAM_DATA = {
       result: "Men's team: Runner-up, our best finish in 12 years. IIT Bombay were also overall sports champions.",
     },
     { year: 2023, host: "", result: "Women's team: Silver" },
+    { year: 2022, host: "", result: "" },
   ],
 
   events: [
@@ -199,11 +208,13 @@ window.TEAM_DATA = {
     },
     {
       name: "Spardha, IIT BHU",
+      scope: "inter-college",
       year: 2025,
       results: [{ category: "Men's Team", place: 3, members: ["ekam-noor-singh", "sai-charan", "prakhar-jain", "aarnav-girish"] }],
     },
     {
       name: "Inter IIT Sports Meet",
+      scope: "inter-college",
       year: 2024,
       results: [
         {
@@ -212,11 +223,12 @@ window.TEAM_DATA = {
           note: "Best finish in 12 years",
           members: ["aadish-vohra", "shlok-agrawal", "ekam-noor-singh", "prayash-sahu", "sai-charan", "prayag-mohanty", "aarnav-girish"],
         },
-        { category: "Overall Sports Championship", place: 1, who: "IIT Bombay" },
+        { category: "Overall Sports Championship", place: 1, who: "IIT Bombay", overall: true },
       ],
     },
     {
       name: "Udghosh, IIT Kanpur",
+      scope: "inter-college",
       year: 2024,
       results: [{ category: "Men's Team", place: 3, members: ["ekam-noor-singh", "shlok-agrawal", "prakhar-jain", "sai-charan"] }],
     },
@@ -240,9 +252,9 @@ window.TEAM_DATA = {
       year: 2024.5,
       yearLabel: "2024-25",
       results: [
-        { category: "Men's · Hostel 6", place: 1, members: ["Rudraksh", "Jathin Sai Ganesh", "sai-charan", "prayash-sahu", "Vinamra"], note: "Beat Hostel 2 3-2 in the final" },
+        { category: "Men's · Hostel 6", place: 1, members: ["Rudraksh", "Jathin Sai Ganesh", "sai-charan", "prayash-sahu", "Vinamra"] },
         { category: "Men's · Hostel 2", place: 2, members: ["shlok-agrawal", "kalp-rawat", "keshav-samdani", "aadish-vohra", "Anurag"] },
-        { category: "Men's · Hostel 3", place: 3, members: ["ekam-noor-singh", "Tamil", "yajat-sharma", "Damodar"], note: "Beat Hostel 18 3-0 for third" },
+        { category: "Men's · Hostel 3", place: 3, members: ["ekam-noor-singh", "Tamil", "yajat-sharma", "Damodar"] },
         { category: "Men's · Hostel 18", place: 4, members: ["suryakant-priyadarshan", "Raj", "lokesh-soni", "tanay-tayal"] },
       ],
     },
@@ -272,6 +284,7 @@ window.TEAM_DATA = {
     },
     {
       name: "Inter IIT Sports Meet",
+      scope: "inter-college",
       year: 2023,
       results: [{ category: "Women's Team", place: 2, label: "Silver", members: ["bhavya-mittal", "tejal-sharan"] }],
     },

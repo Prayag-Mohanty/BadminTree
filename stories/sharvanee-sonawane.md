@@ -5,3 +5,7 @@ Sharvanee moves across the court with effortless grace, her sharp footwork and c
 Sharvanee is a court expert, moving gracefully with amazing footwork and drop shots. Her steps paint the court beautifully, impressing opponents with her skill and precision. With each step, she paints the court with elegance, leaving opponents in awe.
 
 *From Know Your Team, Inter IIT Sports Meet 2023.*
+
+Although she's a fresher, underestimating her in a game will cost you dearly. She has been known to dominate the court with her agility and power. Her high stamina and power keep her a cut above her competitors.
+
+*From Know Your Team, Inter IIT Sports Meet 2022.*

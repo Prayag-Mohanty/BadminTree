@@ -1,4 +1,4 @@
-# IITB Badminton Team Tree
+# Badmintree
 
 An interactive family tree of the IIT Bombay Badminton team: every player, batch by batch, with their roles, achievements, who brought them in, and the extended family of coaches, managers and friends who were part of the journey.
 
@@ -10,9 +10,9 @@ Three tabs:
 
 - **Team Tree**: a curving trunk with one knot per batch (the year they joined IIT Bombay), newest at the top. It grows from the roots on load and a shuttlecock drops down the trunk as you scroll. The tree shows first names; tap anyone for their full name, nicknames, Inter IIT years, results and story. A gold ring marks an Inter IIT player. Search by name or year, or filter to Inter IIT players (all, or one year). The coaches are listed below the tree.
 - **Inter IIT**: each Inter IIT Sports Meet with its host, result and squad.
-- **Trophy Cabinet**: every tournament, league and award, newest first, with team rosters.
+- **Trophy Cabinet**: one dropdown per tournament, split into inter-college and on-campus. Year buttons switch between editions; each category shows its podium on one line. Record placings only (1, 2, 3, 4), not scorelines.
 
-Links: `…/#trophies` and `…/#inter-iit` open a tab; `…/#vidhi-kapuria` opens that player's card. There's a light/dark toggle at the top.
+Links: `…/#trophies` and `…/#inter-iit` open a tab; `…/#vidhi-kapuria` opens that player's card. There's a light/dark toggle at the top. Logos live in `assets/` as single-colour SVGs, so they recolour with the theme.
 
 ## Editing the data
 

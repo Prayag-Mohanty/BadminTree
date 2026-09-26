@@ -450,17 +450,9 @@
     const p = byId.get(ref);
     return p ? `<button class="who-link" type="button" data-open="${p.id}">${esc(p.name)}</button>` : `<span>${esc(ref)}</span>`;
   };
-  const resultPeople = (r) => {
-    const bits = [];
-    if (r.whoList.length) bits.push(`${r.role ? `<span class="rrole">${esc(r.role)}</span> ` : ""}${r.whoList.map(person).join(" &amp; ")}`);
-    if (r.members.length) bits.push(r.members.map(person).join(", "));
-    if (r.note) bits.push(`<span class="rnote">${esc(r.note)}</span>`);
-    return bits.length ? `<span class="nm">${bits.join("<br>")}</span>` : "";
-  };
-
   // ---------- Inter IIT ----------
   function renderInterIIT() {
-    const el = document.getElementById("interiit");
+    const el = document.getElementById("iit-list");
     if (!meets.length) {
       el.innerHTML = `<div class="empty-state">Add each meet to <code>interIITMeets</code> and each player's <code>interIIT</code> in <code>data/team.js</code>.</div>`;
       return;
@@ -483,24 +475,92 @@
   }
 
   // ---------- Trophy cabinet ----------
+  // One dropdown per tournament, split into inter-college and on-campus.
+  // Inside, year buttons switch between editions; each category is one line.
+  const MEDAL_WORD = { 1: "Gold", 2: "Silver", 3: "Bronze" };
+  function editionHTML(ev) {
+    const rows = results.filter((r) => r.ev === ev);
+    const groups = new Map();
+    rows.forEach((r) => {
+      if (!groups.has(r.category)) groups.set(r.category, []);
+      groups.get(r.category).push(r);
+    });
+    return `<ul class="podium">${[...groups.entries()]
+      .map(([cat, rs]) => {
+        const entries = rs
+          .sort((a, b) => (typeof a.place === "number" ? a.place : 9) - (typeof b.place === "number" ? b.place : 9))
+          .map((r) => {
+            const who = [];
+            if (r.whoList.length) who.push(`${r.role ? `<span class="rrole">${esc(r.role)}</span> ` : ""}${r.whoList.map(person).join(" &amp; ")}`);
+            if (r.members.length) who.push(r.members.map(person).join(", "));
+            if (r.note) who.push(`<span class="rnote">${esc(r.note)}</span>`);
+            return `<span class="entry">${medal(r.place)}<span class="pl">${esc(placeLabel(r))}</span>${who.length ? `<span class="nm">${who.join(" · ")}</span>` : ""}</span>`;
+          })
+          .join("");
+        return `<li><span class="cat">${esc(cat)}</span><span class="entries">${entries}</span></li>`;
+      })
+      .join("")}</ul>`;
+  }
+
   function renderTrophies() {
-    const el = document.getElementById("trophies");
+    const el = document.getElementById("trophy-list");
     const events = [...(DATA.events || [])].sort((a, b) => (b.year || 0) - (a.year || 0));
     if (!events.length) {
       el.innerHTML = `<div class="empty-state">Nothing here yet. Add tournaments and results to <code>events</code> in <code>data/team.js</code>.</div>`;
       return;
     }
-    el.innerHTML = `<div class="events">${events
-      .map((ev) => {
-        const rows = results.filter((r) => r.ev === ev);
-        return `<article class="event">
-          <h3>${esc(ev.name)} <span>${esc(eventYear(ev))}</span></h3>
-          <ul>${rows
-            .map((r) => `<li>${medal(r.place)}<span class="cat">${esc(r.category)}</span><span class="pl">${esc(placeLabel(r))}</span>${resultPeople(r)}</li>`)
-            .join("")}</ul>
-        </article>`;
-      })
-      .join("")}</div>`;
+    const series = new Map();
+    events.forEach((ev) => {
+      if (!series.has(ev.name)) series.set(ev.name, []);
+      series.get(ev.name).push(ev);
+    });
+    const block = (title, list) =>
+      list.length
+        ? `<h3 class="cab-group">${title}</h3>${list
+            .map(([name, eds], i) => {
+              const years = eds.map(eventYear);
+              const span = years.length > 1 ? `${years[years.length - 1]} – ${years[0]}` : years[0];
+              // Best badminton finish; `overall` rows (e.g. the institute's overall sports title) don't count.
+              const best = Math.min(...results.filter((r) => eds.includes(r.ev) && typeof r.place === "number" && !r.overall).map((r) => r.place));
+              const golds = results.filter((r) => eds.includes(r.ev) && r.place === 1).length;
+              const badge =
+                eds[0].scope === "inter-college" && isFinite(best)
+                  ? `<span class="s-badge m${best}">Best: ${esc(MEDAL_WORD[best] || PLACE[best])}</span>`
+                  : `<span class="s-badge">${golds} title${golds === 1 ? "" : "s"}</span>`;
+              return `<details class="series"${i === 0 ? " open" : ""}>
+                <summary>
+                  <span class="s-name">${esc(name)}</span>
+                  <span class="s-meta">${eds.length} edition${eds.length === 1 ? "" : "s"} · ${esc(span)}</span>
+                  ${badge}
+                  <span class="chev" aria-hidden="true"></span>
+                </summary>
+                <div class="s-body">
+                  ${
+                    eds.length > 1
+                      ? `<div class="yr-pills" role="group" aria-label="${esc(name)} editions">${eds
+                          .map((ev, k) => `<button type="button" class="yr" data-series="${esc(name)}" data-k="${k}" aria-pressed="${k === 0}">${esc(eventYear(ev))}</button>`)
+                          .join("")}</div>`
+                      : ""
+                  }
+                  <div class="edition">${editionHTML(eds[0])}</div>
+                </div>
+              </details>`;
+            })
+            .join("")}`
+        : "";
+    const all = [...series.entries()];
+    el.innerHTML = `<div class="cabinet">
+      ${block("Inter-college", all.filter(([, eds]) => eds[0].scope === "inter-college"))}
+      ${block("On campus", all.filter(([, eds]) => eds[0].scope !== "inter-college"))}
+    </div>`;
+    el.addEventListener("click", (e) => {
+      const btn = e.target.closest(".yr");
+      if (!btn) return;
+      const eds = series.get(btn.dataset.series);
+      const body = btn.closest(".s-body");
+      body.querySelectorAll(".yr").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      body.querySelector(".edition").innerHTML = editionHTML(eds[Number(btn.dataset.k)]);
+    });
   }
 
   // ---------- Extended family ----------

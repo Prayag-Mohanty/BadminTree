@@ -4,5 +4,8 @@
 window.EXTRA_NICKNAMES = {
   "kalp-rawat": [
     "Mr. Funnybones"
+  ],
+  "yajat-sharma": [
+    "Maggi"
   ]
 };

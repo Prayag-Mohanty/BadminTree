@@ -89,6 +89,7 @@ window.TEAM_DATA = {
       { name: "Aadish Vora", nicknames: ["Court Sick"], interIIT: [{ year: 2024, position: "Men's team captain" }] },
       { name: "Arshit Singh" },
       { name: "Arjun Kabra" },
+      { name: "Shreyash" },
       { name: "Tejal Sharan", nicknames: ["Designer Dadi"], interIIT: [{ year: 2023 }] },
       { name: "Sara Ahire", nicknames: ["Ms. Freshie"], interIIT: [{ year: 2023 }] },
     ],

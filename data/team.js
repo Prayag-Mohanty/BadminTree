@@ -362,7 +362,7 @@ window.TEAM_DATA = {
   // Coaches, shown under the tree.
   // { name: "…", role: "Coach", years: "2019-present", note: "…" }
   family: [
-    { name: "Shelendra Rasaniya", role: "Head coach · Men's coach" },
+    { name: "Shelendra Rasaniya", role: "Head coach" },
     { name: "Namrata Ghole", role: "Women's coach" },
   ],
 };

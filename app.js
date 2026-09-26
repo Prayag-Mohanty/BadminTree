@@ -300,7 +300,10 @@
   chips.innerHTML = [
     ["all", "Everyone"],
     ["interiit", "Inter IIT players"],
-    ...(meets.length > 1 ? meets.map((m) => [String(m.year), `Inter IIT ${m.year}`]) : []),
+    // One button per Inter IIT year, but only for years with a squad on the tree.
+    ...meets
+      .filter((m) => players.some((p) => p.interIIT.some((t) => t.year === m.year)))
+      .map((m) => [String(m.year), `Inter IIT ${m.year}`]),
   ]
     .map(([v, label]) => `<button class="chip" type="button" data-squad="${v}" aria-pressed="${v === squad}">${esc(label)}</button>`)
     .join("");

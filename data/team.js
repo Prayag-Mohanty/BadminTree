@@ -109,7 +109,7 @@ window.TEAM_DATA = {
       { name: "Anuj Partani", nicknames: ["Secy"], interIIT: [{ year: 2022 }] },
       { name: "Jathin Sai Ganesh" },
       { name: "Aanya Verma", nicknames: ["Captain Cool"], interIIT: [{ year: 2023, position: "Women's team captain" }] },
-      { name: "Rupansh Kaushik", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023 }, { year: 2022, position: "Men's team captain" }] },
+      { name: "Rupansh Kaushik", nicknames: ["Maverick", "Captain"], interIIT: [{ year: 2023, position: "Men's team captain" }, { year: 2022, position: "Men's team captain" }] },
       { name: "Gyan Bhushan", nicknames: ["Navy"], interIIT: [{ year: 2022 }] },
       { name: "Vaibhav Gupta", nicknames: ["Air Force"], interIIT: [{ year: 2022 }] },
     ],

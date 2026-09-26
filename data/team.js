@@ -363,6 +363,6 @@ window.TEAM_DATA = {
   // { name: "…", role: "Coach", years: "2019-present", note: "…" }
   family: [
     { name: "Shelendra Rasaniya", role: "Head coach" },
-    { name: "Namrata Ghole", role: "Women's coach" },
+    { name: "Namrata Ghole", role: "Coach" },
   ],
 };

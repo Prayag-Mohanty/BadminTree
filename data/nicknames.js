@@ -25,6 +25,7 @@ window.EXTRA_NICKNAMES = {
     "Marco"
   ],
   "gopal-verma": [
-    "Cool"
+    "Cool",
+    "AC"
   ]
 };

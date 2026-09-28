@@ -2,4 +2,4 @@ Garima is the team's left-handed strategist, known for her ability to outwit opp
 
 *From Know Your Team, Inter IIT Sports Meet 2024.*
 
-Bakchod laundi. Andha daaru guzzler. Amazing vibe. Mai apni favorite hoon types
+Bakchod laundi. Amazing vibe. Mai apni favorite hoon types

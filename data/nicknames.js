@@ -14,5 +14,8 @@ window.EXTRA_NICKNAMES = {
   "arshit-singh": [
     "Jawline",
     "Mommy magnet"
+  ],
+  "yash-arya": [
+    "Great Wall"
   ]
 };

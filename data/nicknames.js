@@ -20,5 +20,8 @@ window.EXTRA_NICKNAMES = {
   ],
   "rishabh-meena": [
     "Polo"
+  ],
+  "tushar-meena": [
+    "Marco"
   ]
 };

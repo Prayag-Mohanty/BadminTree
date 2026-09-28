@@ -1,0 +1,1 @@
+Naturally funny & smart guy. You can always bet on him to say a great time. Always references the niche reels he watches. Him & Yajat are not blood-related but have a palangtod dosti. His own reels have crossed 5M views on insta. While swimming, let's just he knows more than one way to warm up the water. Pro squash & frisbee player. Love is love, for Kalp.

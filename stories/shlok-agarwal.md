@@ -6,4 +6,4 @@ On the court, he brings a whole new level of domination! His ultra-aggressive st
 
 *From Know Your Team, Inter IIT Sports Meet 2023.*
 
-Follows the 3-2-1. 3 beers every 2 days per 1 week. Has insane rizz, until he opens his mouth. Patakho se gaand phatti hai.
+Follows the 3-2-1. 3 beers every 2 days every 1 week. Has insane rizz, until he opens his mouth. Patakho se gaand phatti hai.

@@ -5,3 +5,5 @@ Meet Aarnav: the team's calm thinker and our unofficial mood-maker. On court, he
 With sharp drop shots and a solid net game, Aarnav is a dependable player who excels at controlling the pace of the game. Known for his calm and focused approach on the court, he is equally appreciated for his light-hearted and fun attitude off it. Always a team player, he keeps the squad motivated and in good spirits.
 
 *From Know Your Team, Inter IIT Sports Meet 2024.*
+
+Arsenal supporter (pls pray for him). Highly humble guy, even at the poshest of the 5-star restaurant, even when its someone's treat, he'll simply have dahi chawal.

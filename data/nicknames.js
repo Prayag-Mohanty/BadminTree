@@ -27,7 +27,6 @@ window.NICKNAMES = {
     "Marco"
   ],
   "gopal-verma": [
-    "Cool",
     "AC"
   ]
 };

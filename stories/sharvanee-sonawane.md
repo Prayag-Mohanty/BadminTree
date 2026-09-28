@@ -9,3 +9,5 @@ Sharvanee is a court expert, moving gracefully with amazing footwork and drop sh
 Although she's a fresher, underestimating her in a game will cost you dearly. She has been known to dominate the court with her agility and power. Her high stamina and power keep her a cut above her competitors.
 
 *From Know Your Team, Inter IIT Sports Meet 2022.*
+
+Sharvanee & Yajat have an **intense panja ladaai rivalry,** where Sharvanee is leading (as of 2026). She is highly prone to injuries.

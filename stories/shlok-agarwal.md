@@ -5,3 +5,5 @@ The heartbeat of the team, Shlok is renowned for his aggressive, lightning-fast 
 On the court, he brings a whole new level of domination! His ultra-aggressive style leaves opponents breathless, making every shot count. With unrivaled precision and intensity, he's like the team's secret weapon: our Bantai bringing the heat!
 
 *From Know Your Team, Inter IIT Sports Meet 2023.*
+
+Follows the 3-2-1. 3 beers every 2 days per 1 week. Has insane rizz, until he opens his mouth. Patakho se gaand phatti hai.

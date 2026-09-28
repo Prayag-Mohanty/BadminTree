@@ -28,5 +28,10 @@ window.NICKNAMES = {
   ],
   "gopal-verma": [
     "AC"
+  ],
+  "prayash-sahu": [
+    "Goldman",
+    "Gambhir",
+    "Papa"
   ]
 };

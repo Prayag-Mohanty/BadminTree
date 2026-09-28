@@ -1,11 +1,13 @@
-// Nicknames added from the site's Edit form, by person id.
-// The save function (api/save.js) appends to this file; the site merges
-// these with the nicknames in data/team.js. You can also edit it by hand.
-window.EXTRA_NICKNAMES = {
+// Nickname lists edited from the site, by person id.
+// A person listed here uses this list instead of the nicknames in
+// data/team.js. The save function (api/save.js) writes this file; you can
+// also edit it by hand.
+window.NICKNAMES = {
   "kalp-rawat": [
     "Mr. Funnybones"
   ],
   "yajat-sharma": [
+    "Spiderman",
     "Maggi"
   ],
   "arjun-kabra": [

@@ -21,7 +21,7 @@ Links: `…/#inter-iit` and `…/#trophies` open a tab; `…/#vidhi-kapuria` ope
 | Path | What it holds |
 | --- | --- |
 | `data/team.js` | All the content: players, Inter IIT meets, results, leadership, coaches |
-| `data/nicknames.js` | Nicknames added from the site (merged with the ones in `team.js`) |
+| `data/nicknames.js` | Nickname lists edited from the site (override the ones in `team.js`) |
 | `stories/<id>.md` | Each person's lore (one file per person) |
 | `photos/<id>.jpg` | One profile photo per person (picked up automatically) |
 | `gallery/<id>/` | Extra photos of that person, shown on their card |
@@ -61,7 +61,7 @@ Keep the commas and quotes intact: each field is `key: "value",` and each person
 
 ## Editing from the site
 
-Every card (players and coaches) has an **Edit** button: add nicknames, rewrite their lore, replace the profile photo, or add photos to the person's gallery. Anyone can edit; no GitHub account needed. **Save** writes the change to this repo and the site updates in about a minute.
+Every card (players and coaches) has an **Edit** button: edit nicknames, rewrite their lore, replace the profile photo, or add photos to the person's gallery. Anyone can edit; no GitHub account needed. **Save** writes the change to this repo and the site updates in about a minute.
 
 Saving goes through a small function, [`api/save.js`](api/save.js), which runs on Vercel and holds the only GitHub token. It only accepts edits to people already on the site, and only nicknames, lore and JPEG photos. Every edit is a normal commit, so anything unwanted can be reverted from the repo's history.
 
@@ -80,7 +80,7 @@ What gets saved where:
 
 | Change | File |
 | --- | --- |
-| Nicknames (added, never removed) | `data/nicknames.js` |
+| Nicknames (full list per person) | `data/nicknames.js` |
 | Lore | `stories/<id>.md` |
 | Profile photo (cropped square, 480 px) | `photos/<id>.jpg` |
 | Gallery photos (up to 1600 px) | `gallery/<id>/<timestamp>.jpg` |

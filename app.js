@@ -2,12 +2,10 @@
   "use strict";
 
   const DATA = window.TEAM_DATA || { batches: {} };
-  // Nicknames added from the site (data/nicknames.js), merged with the data file's.
-  const EXTRA_NICKNAMES = window.EXTRA_NICKNAMES || {};
-  const withExtraNicknames = (id, base) => {
-    const seen = new Set(base.map((n) => n.toLowerCase()));
-    return [...base, ...(EXTRA_NICKNAMES[id] || []).filter((n) => !seen.has(n.toLowerCase()) && seen.add(n.toLowerCase()))];
-  };
+  // Nickname lists edited from the site (data/nicknames.js). Anyone listed
+  // there uses that list instead of the nicknames in data/team.js.
+  const NICKNAMES = window.NICKNAMES || {};
+  const nicknamesFor = (id, base) => (Array.isArray(NICKNAMES[id]) ? NICKNAMES[id] : base);
   const SVGNS = "http://www.w3.org/2000/svg";
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -32,7 +30,7 @@
     if (!raw || !raw.name) return;
     let id = raw.id || slug(raw.name);
     if (byId.has(id)) id = `${id}-${year}`;
-    const nicknames = withExtraNicknames(id, raw.nicknames || (raw.nickname ? [raw.nickname] : []));
+    const nicknames = nicknamesFor(id, raw.nicknames || (raw.nickname ? [raw.nickname] : []));
     const p = { ...raw, id, year, nicknames, roles: raw.roles || [], interIIT: raw.interIIT || [] };
     players.push(p);
     byId.set(id, p);
@@ -51,7 +49,7 @@
   // Coaches get cards too (but no place on the tree).
   (DATA.family || []).forEach((f) => {
     const id = f.id || slug(f.name);
-    if (!byId.has(id)) byId.set(id, { ...f, id, coach: true, year: null, nicknames: withExtraNicknames(id, f.nicknames || []), roles: [f.role].filter(Boolean), interIIT: [] });
+    if (!byId.has(id)) byId.set(id, { ...f, id, coach: true, year: null, nicknames: nicknamesFor(id, f.nicknames || []), roles: [f.role].filter(Boolean), interIIT: [] });
   });
   const batchKeys = [...years, ...((DATA.yearUnknown || []).length ? [null] : [])];
 
@@ -483,6 +481,8 @@
     }
   }
 
+  const nickRow = (n) =>
+    `<div class="ed-nick-row"><input type="text" maxlength="40" autocomplete="off" aria-label="Nickname" value="${esc(n)}" placeholder="e.g. Net Ninja"><button type="button" class="ed-nick-rm" aria-label="Remove nickname">✕</button></div>`;
   const nickLine = (p) => (p.nicknames.length ? `aka ${p.nicknames.map((n) => `“${esc(n)}”`).join(", ")}` : "");
   // Refresh a person's nicknames on the open card and on the tree.
   function showNicknames(p) {
@@ -493,6 +493,7 @@
       let tag = leafName.querySelector(".nick");
       if (!tag) { tag = document.createElement("span"); tag.className = "nick"; leafName.appendChild(tag); }
       tag.textContent = p.nicknames.join(" · ");
+      tag.hidden = !p.nicknames.length;
     }
   }
 
@@ -511,10 +512,10 @@
              <p class="ed-help">Ask in the team group. You only need to enter it once on this device.</p>`
           : ""
       }
-      <label class="ed-label" for="ed-nick">Add nicknames</label>
-      ${p.nicknames.length ? `<p class="ed-help ed-nicks">Already known as ${p.nicknames.map((n) => `“${esc(n)}”`).join(", ")}</p>` : ""}
-      <input id="ed-nick" type="text" autocomplete="off" maxlength="200" placeholder="e.g. Smash King, Net Ninja">
-      <p class="ed-help">Separate several with commas.</p>
+      <span class="ed-label" id="ed-nick-label">Nicknames</span>
+      <div class="ed-nicks" role="group" aria-labelledby="ed-nick-label">${p.nicknames.map(nickRow).join("")}</div>
+      <button type="button" class="ed-nick-add">+ Add a nickname</button>
+      <p class="ed-help">Edit any nickname in place, or press ✕ to remove it.</p>
       <label class="ed-label" for="ed-photo">Profile photo</label>
       <div class="ed-photo-row">${avatar(p)}<input id="ed-photo" type="file" accept="image/*"></div>
       <p class="ed-help">Cropped to a square from the centre, so a face in the middle works best.</p>
@@ -531,6 +532,16 @@
     </form>`;
     const form = slot.querySelector("form");
     form.scrollIntoView({ behavior: "smooth", block: "start" });
+    const nickList = form.querySelector(".ed-nicks");
+    form.querySelector(".ed-nick-add").addEventListener("click", () => {
+      if (nickList.children.length >= 12) return;
+      nickList.insertAdjacentHTML("beforeend", nickRow(""));
+      nickList.lastElementChild.querySelector("input").focus();
+    });
+    nickList.addEventListener("click", (e) => {
+      const rm = e.target.closest(".ed-nick-rm");
+      if (rm) rm.closest(".ed-nick-row").remove();
+    });
     form.querySelector(".ed-cancel").addEventListener("click", () => (slot.innerHTML = ""));
 
     form.addEventListener("submit", async (e) => {
@@ -546,23 +557,25 @@
       const extras = [...form.querySelector("#ed-gallery").files];
       const story = form.querySelector("#ed-story").value.replace(/\r\n/g, "\n").trim();
       const storyChanged = story !== (currentStory || "").trim();
-      const known = new Set(p.nicknames.map((n) => n.toLowerCase()));
-      const newNicks = [...new Set(form.querySelector("#ed-nick").value.split(",").map((n) => n.replace(/\s+/g, " ").trim()).filter(Boolean))]
-        .filter((n) => !known.has(n.toLowerCase()));
-      if (newNicks.length > 5) { status.textContent = "Add up to 5 nicknames at a time."; return; }
-      if (newNicks.some((n) => n.length > 40)) { status.textContent = "Nicknames can be up to 40 characters."; return; }
-      if (!photo && !extras.length && !storyChanged && !newNicks.length) { status.textContent = "Nothing has changed yet."; return; }
+      const seenNick = new Set();
+      const nicks = [...form.querySelectorAll(".ed-nick-row input")]
+        .map((i) => i.value.replace(/\s+/g, " ").trim())
+        .filter((n) => n && !seenNick.has(n.toLowerCase()) && seenNick.add(n.toLowerCase()));
+      const nicksChanged = nicks.join("\n") !== p.nicknames.join("\n");
+      if (nicks.some((n) => n.length > 40)) { status.textContent = "Nicknames can be up to 40 characters."; return; }
+      if (!photo && !extras.length && !storyChanged && !nicksChanged) { status.textContent = "Nothing has changed yet."; return; }
 
       const saveBtn = form.querySelector(".ed-save");
       saveBtn.disabled = true;
       const done = [];
       try {
-        if (newNicks.length) {
+        if (nicksChanged) {
           status.textContent = "Saving nicknames…";
-          const r = await saveToSite({ id: p.id, kind: "nicknames", content: newNicks });
-          p.nicknames = withExtraNicknames(p.id, [...p.nicknames, ...(r.nicknames || newNicks)]);
+          const r = await saveToSite({ id: p.id, kind: "nicknames", content: nicks });
+          p.nicknames = r.nicknames || nicks;
+          NICKNAMES[p.id] = p.nicknames;
           showNicknames(p);
-          done.push(newNicks.length === 1 ? "nickname" : "nicknames");
+          done.push("nicknames");
         }
         if (storyChanged) {
           status.textContent = "Saving lore…";

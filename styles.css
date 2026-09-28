@@ -779,3 +779,17 @@ button.family-card:hover { border-color: var(--gold); }
 .family-card .fnote { margin-top: 4px; font-size: 13px; color: var(--muted); }
 .meet header:last-child { margin-bottom: 0; }
 .story .lore-more { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--glass-edge); font-size: 13.5px; }
+
+/* Nickname list in the Edit form */
+.ed-nicks { display: grid; gap: 6px; }
+.ed-nick-row { display: flex; gap: 6px; }
+.ed-nick-row input { flex: 1; min-width: 0; }
+.ed-nick-rm {
+  flex: none; width: 38px; font: inherit; font-size: 14px; color: var(--muted);
+  background: transparent; border: 1px solid var(--line); border-radius: 10px; cursor: pointer;
+}
+.ed-nick-rm:hover { color: var(--red); border-color: var(--red); }
+.ed-nick-add {
+  justify-self: start; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--blue);
+  background: none; border: 1px dashed var(--line); border-radius: 999px; padding: 5px 14px; cursor: pointer;
+}

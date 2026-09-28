@@ -22,20 +22,22 @@ const LIMITS = {
   photo: 1.5 * 1024 * 1024, // base64 characters (~1.1 MB image)
   gallery: 3.5 * 1024 * 1024, // base64 characters (~2.6 MB image); Vercel caps bodies at 4.5 MB
   nickname: 40, // characters per nickname
-  nicknamesPerSave: 5,
-  nicknamesPerPerson: 12, // added from the site, on top of data/team.js
+  nicknamesPerPerson: 12,
 };
 
+// data/nicknames.js holds each edited person's full nickname list. A person
+// listed there uses that list instead of the one in data/team.js.
 const NICK_FILE = "data/nicknames.js";
-const NICK_PREFIX = "window.EXTRA_NICKNAMES = ";
+const NICK_PREFIX = "window.NICKNAMES = ";
 const NICK_HEADER =
-  "// Nicknames added from the site's Edit form, by person id.\n" +
-  "// The save function (api/save.js) appends to this file; the site merges\n" +
-  "// these with the nicknames in data/team.js. You can also edit it by hand.\n";
+  "// Nickname lists edited from the site, by person id.\n" +
+  "// A person listed here uses this list instead of the nicknames in\n" +
+  "// data/team.js. The save function (api/save.js) writes this file; you can\n" +
+  "// also edit it by hand.\n";
 
-// Appends nicknames to data/nicknames.js. Several people may save at once, so
+// Replaces one person's nickname list. Several people may save at once, so
 // read-modify-write with the file's sha and retry if someone got there first.
-async function addNicknames(id, names) {
+async function setNicknames(id, names) {
   for (let attempt = 0; attempt < 4; attempt++) {
     let sha;
     let map = {};
@@ -47,24 +49,19 @@ async function addNicknames(id, names) {
       const i = text.indexOf(NICK_PREFIX);
       if (i >= 0) map = JSON.parse(text.slice(i + NICK_PREFIX.length).trim().replace(/;\s*$/, "") || "{}");
     }
-    const have = map[id] || [];
-    const seen = new Set(have.map((n) => n.toLowerCase()));
-    const fresh = names.filter((n) => !seen.has(n.toLowerCase()) && seen.add(n.toLowerCase()));
-    if (!fresh.length) return have;
-    const next = [...have, ...fresh].slice(0, LIMITS.nicknamesPerPerson);
-    map[id] = next;
+    map[id] = names;
     const body = NICK_HEADER + NICK_PREFIX + JSON.stringify(map, null, 2) + ";\n";
     const res = await gh(`contents/${NICK_FILE}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        message: `Add nicknames for ${id}`,
+        message: `Update nicknames for ${id}`,
         content: Buffer.from(body, "utf8").toString("base64"),
         branch: BRANCH,
         ...(sha ? { sha } : {}),
       }),
     });
-    if (res.ok) return next;
+    if (res.ok) return names;
     if (res.status !== 409 && res.status !== 422) {
       const err = new Error(`GitHub replied ${res.status}`);
       err.status = res.status;
@@ -183,17 +180,19 @@ module.exports = async function handler(req, res) {
     }
 
     if (kind === "nicknames") {
-      const names = Array.isArray(content)
-        ? content.map((n) => String(n).replace(/\s+/g, " ").trim()).filter(Boolean)
-        : [];
-      if (!names.length) return res.status(400).json({ error: "Type a nickname first." });
-      if (names.length > LIMITS.nicknamesPerSave) {
-        return res.status(400).json({ error: `Add up to ${LIMITS.nicknamesPerSave} nicknames at a time.` });
+      if (!Array.isArray(content)) return res.status(400).json({ error: "Nothing to save." });
+      // The full list, as edited. Trim, drop blanks and case-insensitive repeats.
+      const seen = new Set();
+      const names = content
+        .map((n) => String(n).replace(/\s+/g, " ").trim())
+        .filter((n) => n && !seen.has(n.toLowerCase()) && seen.add(n.toLowerCase()));
+      if (names.length > LIMITS.nicknamesPerPerson) {
+        return res.status(400).json({ error: `Up to ${LIMITS.nicknamesPerPerson} nicknames per person.` });
       }
       if (names.some((n) => n.length > LIMITS.nickname)) {
         return res.status(400).json({ error: `Nicknames can be up to ${LIMITS.nickname} characters.` });
       }
-      const nicknames = await addNicknames(id, names);
+      const nicknames = await setNicknames(id, names);
       return res.status(200).json({ ok: true, nicknames });
     }
 
